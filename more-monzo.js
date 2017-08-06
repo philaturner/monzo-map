@@ -11,7 +11,6 @@ var user = {
   'getBasicTrans': '/transactions?',
   'getAdvTrans': '/transactions?expand[]=merchant',
   getData: function(){
-    //monzoapi.makeCall(this.getBalance);
     monzoapi.makeCall(this.getAdvTrans);
   }
 }
@@ -37,16 +36,17 @@ xhr.onload = function (e) {
 };
 
 function callbackHandler(reponse, type){
-  //user.data = JSON.parse(reponse);
-  //console.log(type, user.data);
   if (type == '/transactions?expand[]=merchant'){
     let mainArr = {};
     let totalAmount = 0;
+    let totalTransaction = 0;
+    let topMerchant = {'name' : 'Intial', 'spend': 0};
     user.data = JSON.parse(reponse);
     //loop through and add labels to object
     for (i = 0; i < user.data.transactions.length; i++){
       if (user.data.transactions[i].amount < 0 && user.data.transactions[i].include_in_spending == true && user.data.transactions[i].merchant != null){
         totalAmount += (user.data.transactions[i].amount*-1);
+        totalTransaction++;
         let key = user.data.transactions[i].merchant.id;
         mainArr[key] = {
           'name': user.data.transactions[i].merchant.name,
@@ -56,7 +56,6 @@ function callbackHandler(reponse, type){
           'spend': 0,
           'trans': 0,
         }
-        //mainArr[key].spend = mainArr[key].spend + (user.data.transactions[i].amount*-1);
       }
     }
     //add spends to object & trans
@@ -65,15 +64,25 @@ function callbackHandler(reponse, type){
         let key = user.data.transactions[i].merchant.id;
         mainArr[key].spend = mainArr[key].spend + (user.data.transactions[i].amount * -1);
         mainArr[key].trans += 1;
+        //test and assign top merchant
+        if (mainArr[key].spend > topMerchant.spend){
+          topMerchant.name = mainArr[key].name;
+          topMerchant.spend = mainArr[key].spend;
+        }
       }
     }
     console.log('Data parsed');
     user.locations = mainArr;
     user.transTotal = (totalAmount/100);
+    user.totalTransaction = totalTransaction;
+    user.topMerch = topMerchant.name;
     mapSpend.setCenter(calculateMapCentre(user.locations));
 
     let mData = createMapboxJSON(user.locations);
     if (mData != undefined) mapSpend.getSource('purchases').setData(mData);
+    if (mData != undefined) mapSpend.getSource('heatspends').setData(mData);
+    user.geojson = mData;
+    populateStatsDOM();
   }
 }
 
@@ -95,27 +104,25 @@ function setup(){
   var button = select('#btnsubmit');
   button.mousePressed(intialCall);
 
-
   mapSpend = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/mapbox/dark-v9', // map style
     center: [-2.2, 53.48], // default position [lng, lat]
-    //center: calculateMapCentre(user.locations),
     zoom: 5.8
      // starting zoom
   });
-  //let tempUrl = 'https://wanderdrone.appspot.com/';
   mapSpend.on('load', function () {
-
-      mapSpend.addSource('purchases', { type: 'geojson', data: createMapboxJSON(user.locations) });
+      //addHeatmap();
+      mapSpend.addSource('purchases', { type: 'geojson', data: null });  //load with null data until we populate
       mapSpend.addLayer({
           "id": "purchases",
           "type": "symbol",
           "source": "purchases",
           "layout": {
-              "icon-image": "marker-15"
+               "icon-image": "marker-15",
           }
       });
+  addHeatmap();
   });
 
   mapSpend.on('click', 'purchases', function (e) {
@@ -124,6 +131,18 @@ function setup(){
         .setHTML(e.features[0].properties.description)
         .addTo(mapSpend);
   });
+}
+
+function populateStatsDOM(){
+  console.log('Adding stats to DOM');
+  let amount = select('#value');
+  let transTot = select('#trans');
+  let topMerc = select('#merchant');
+  amount.elt.innerText = user.transTotal;
+  transTot.elt.innerText = user.totalTransaction;
+  topMerc.elt.innerText = user.topMerch;
+  let statBox = select('#stat-text');
+  statBox.style('visibility', 'visible');
 }
 
 function calculateMapCentre(geoCoordinates){
@@ -188,10 +207,9 @@ function createMapboxJSON(data){
     mainObject.features.push(childObject);
   }
 
-  //console.log(mainObject);
-  //var json = JSON.stringify(mainObject);
-  //console.log(json);
-  console.log('Adding transactions to map');
+  console.log('Marking the map!');
+  let myJSON = JSON.stringify(mainObject);
+  console.log(myJSON);
   return mainObject
 }
 
@@ -203,4 +221,59 @@ function buildPopupDesc (name, spend, image, trans){
 
 function penceToPounds(value){
     return ((Number(value)||0).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,"));
+}
+
+function addHeatmap(){
+  console.log('Adding heatmap');
+  // Add a new source from our GeoJSON data and set the
+  // 'cluster' option to true.
+  mapSpend.addSource("heatspends", {
+    type: "geojson",
+    // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
+    // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
+    data: null,
+    cluster: true,
+    clusterMaxZoom: 20, // Max zoom to cluster points on
+    clusterRadius: 25 // Use small cluster radius for the heatmap look
+  });
+
+  // Use the earthquakes source to create four layers:
+  // three for each cluster category, and one for unclustered points
+
+  // Each point range gets a different fill color.
+  var layers = [
+    [0, 'green'],
+    [10, 'orange'],
+    [25, 'red']
+  ];
+
+  layers.forEach(function (layer, i) {
+    mapSpend.addLayer({
+        "id": "cluster-" + i,
+        "type": "circle",
+        "source": "heatspends",
+        "paint": {
+            "circle-color": layer[1],
+            "circle-radius": 25,
+            "circle-blur": 1.3 // blur the circles to get a heatmap look
+        },
+        "filter": i === layers.length - 1 ?
+            [">=", "point_count", layer[0]] :
+            ["all",
+                [">=", "point_count", layer[0]],
+                ["<", "point_count", layers[i + 1][0]]]
+    }, 'waterway-label');
+  });
+
+  mapSpend.addLayer({
+    "id": "unclustered-points",
+    "type": "circle",
+    "source": "heatspends",
+    "paint": {
+        "circle-color": 'rgba(0,255,0,0.5)',
+        "circle-radius": 15,
+        "circle-blur": 1.3
+    },
+    "filter": ["!=", "cluster", true]
+  }, 'waterway-label');
 }
