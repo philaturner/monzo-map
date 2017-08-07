@@ -216,7 +216,7 @@ function createMapboxJSON(data){
 function buildPopupDesc (name, spend, image, trans){
   let value = penceToPounds((spend/100));
   let spendPerc = ((spend/100) / user.transTotal) * 100
-  return "<strong><font color = #4CAFF0><img src ='" + image + "'width=12/> " + name + "</font></strong><p>You have spent £" + value + " here<br>This is " + spendPerc.toFixed(2) + "% our of all spends<br>"+ trans +" transaction(s) at this location</p>"
+  return "<strong><font color = #4CAFF0><img src ='" + image + "'width=12/> " + name + "</font></strong><p>You have spent £" + value + " here<br>This is " + spendPerc.toFixed(2) + "% out of all spends<br>"+ trans +" transaction(s) at this location</p>"
 }
 
 function penceToPounds(value){
