@@ -1,0 +1,139 @@
+  * {
+    font-family: 'Open Sans';
+    margin: 0;
+    padding: 0;
+  }
+  h1 {
+    margin-bottom: auto;
+    color: #4CAFF0;
+    padding-left: 5px;
+    font-size: 20pt;
+  }
+  p {
+    padding-left: 5px;
+    padding-bottom: 5px;
+  }
+  h2 {
+    color: #fff;
+    margin-top: 1px;
+    padding-left: 5px;
+    padding-bottom: 10px;
+    font-size: 11pt;
+  }
+  h3 {
+    padding-left: 5px;
+    padding-top: 5px;
+  }
+  canvas {
+    padding-left: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+  header {
+    background-color: #333333;
+    margin: 0;
+    padding: 0;
+  }
+  .button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 6px 6px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 5px;
+    width: 100px;
+  }
+  .button:hover {
+    background-color: #4CAFF0;
+  }
+  #map {
+    position:absolute;
+    width: 100%;
+    height: 500px;
+  }
+  div.login{
+    float: left;
+    width: 90%;
+  }
+  div.stats{
+    float: right;
+    padding-top: 40px;
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+  div.map {
+    width: 100%;
+    margin: auto;
+    float: left;
+  }
+  .mapboxgl-popup {
+    max-width: 300px;
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  }
+  #stat-text{
+    background: rgba(207, 83, 0, 0.7);
+    color: #fff;
+    position: absolute;
+    visibility: hidden;
+    z-index: 1;
+    top: 15px;
+    right: 10px;
+    font-size: 13px;
+    border-radius: 1px;
+    width: 150px;
+    border: 1px solid rgba(0,0,0,0.4);
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    padding: 5px 5px 5px 5px;
+  }
+  #menu {
+    background: #fff;
+    position: absolute;
+    z-index: 1;
+    top: 15px;
+    left: 10px;
+    border-radius: 1px;
+    width: 90px;
+    border: 1px solid rgba(0,0,0,0.4);
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  #menu a {
+    font-size: 12px;
+    color: #404040;
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 3px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+    text-align: center;
+  }
+
+  #menu a:last-child {
+    border: none;
+  }
+
+  #menu a:hover {
+    background-color: #f8f8f8;
+    color: #404040;
+  }
+
+  #menu a.active {
+    background-color: #3887be;
+    color: #ffffff;
+  }
+
+  #menu a.active:hover {
+    background: #3074a4;
+  }
+
+  @media (max-width: 499px){
+    #stat-text{
+      top: auto;
+      bottom: 15px;
+    }
+  }

@@ -75,12 +75,14 @@ function callbackHandler(reponse, type){
     user.locations = mainArr;
     user.transTotal = (totalAmount/100);
     user.totalTransaction = totalTransaction;
-    user.topMerch = topMerchant.name;
+    user.topMerch = [topMerchant.name,penceToPounds(topMerchant.spend/100)];
     mapSpend.setCenter(calculateMapCentre(user.locations));
 
     let mData = createMapboxJSON(user.locations);
     if (mData != undefined) mapSpend.getSource('purchases').setData(mData);
+    addHeatmap();
     if (mData != undefined) mapSpend.getSource('heatspends').setData(mData);
+    console.log(mapSpend);
     user.geojson = mData;
     populateStatsDOM();
   }
@@ -122,7 +124,7 @@ function setup(){
                "icon-image": "marker-15",
           }
       });
-  addHeatmap();
+  //addHeatmap();
   });
 
   mapSpend.on('click', 'purchases', function (e) {
@@ -131,6 +133,56 @@ function setup(){
         .setHTML(e.features[0].properties.description)
         .addTo(mapSpend);
   });
+
+  var toggleableLayerLabels = [ 'markers', 'heatmap'];
+  var toggleableLayerIds = [ 'purchases', 'heatmap'];
+
+  for (var i = 0; i < toggleableLayerIds.length; i++) {
+      var id = toggleableLayerIds[i];
+      var label = toggleableLayerLabels[i];
+      var clusters = ['cluster-0', 'cluster-1', 'cluster-2'] //add clusters
+
+
+      var link = document.createElement('a');
+      link.href = '#';
+      link.className = 'active';
+      link.textContent = label;
+      link.idContent = id;
+
+      link.onclick = function (e) {
+          var clickedLayer = this.idContent;
+          e.preventDefault();
+          e.stopPropagation();
+
+          var visibility = mapSpend.getLayoutProperty(clickedLayer, 'visibility');
+
+          if (visibility === 'visible') {
+              mapSpend.setLayoutProperty(clickedLayer, 'visibility', 'none');
+              this.className = '';
+              //check for heatmap and turn off clusters
+              if (this.idContent == 'heatmap'){
+                for (i = 0; i < clusters.length; i++){
+                  let clusterLayer = clusters[i];
+                  mapSpend.setLayoutProperty(clusterLayer, 'visibility', 'none');
+                }
+              }
+
+          } else {
+              this.className = 'active';
+              mapSpend.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+              //check for heatmap and turn on clusters
+              if (this.idContent == 'heatmap'){
+                for (i = 0; i < clusters.length; i++){
+                  let clusterLayer = clusters[i];
+                  mapSpend.setLayoutProperty(clusterLayer, 'visibility', 'visible');
+                }
+              }
+          }
+      };
+
+      var layers = document.getElementById('menu');
+      layers.appendChild(link);
+  }
 }
 
 function populateStatsDOM(){
@@ -140,7 +192,8 @@ function populateStatsDOM(){
   let topMerc = select('#merchant');
   amount.elt.innerText = user.transTotal;
   transTot.elt.innerText = user.totalTransaction;
-  topMerc.elt.innerText = user.topMerch;
+  let mercString = ' ' + user.topMerch[0] + ' (£' + user.topMerch[1] + ')';
+  topMerc.elt.innerText = mercString;
   let statBox = select('#stat-text');
   statBox.style('visibility', 'visible');
 }
@@ -207,8 +260,8 @@ function createMapboxJSON(data){
   }
 
   console.log('Marking the map!');
-  let myJSON = JSON.stringify(mainObject);
-  console.log(myJSON);
+  //let myJSON = JSON.stringify(mainObject);
+  //console.log(myJSON);
   return mainObject
 }
 
@@ -232,13 +285,19 @@ function addHeatmap(){
     clusterRadius: 25 // Use small cluster radius for the heatmap look
   });
 
+  //calculate point density based on total transactions
+  let g = 1 ;
+  let o = user.totalTransaction/2;
+  let r = floor(user.totalTransaction*0.8);
+
   //each point range gets a different fill color.
   var layers = [
-    [0, 'green'],
-    [10, 'orange'],
-    [25, 'red']
+    [1, 'green'],
+    [7, 'orange'],
+    [15, 'red']
   ];
 
+  console.log(layers);
   layers.forEach(function (layer, i) {
     mapSpend.addLayer({
         "id": "cluster-" + i,
@@ -246,7 +305,7 @@ function addHeatmap(){
         "source": "heatspends",
         "paint": {
             "circle-color": layer[1],
-            "circle-radius": 25,
+            "circle-radius": 45,
             "circle-blur": 1.3 // blur the circles to get a heatmap look
         },
         "filter": i === layers.length - 1 ?
@@ -258,12 +317,12 @@ function addHeatmap(){
   });
 
   mapSpend.addLayer({
-    "id": "unclustered-points",
+    "id": "heatmap",
     "type": "circle",
     "source": "heatspends",
     "paint": {
         "circle-color": 'rgba(0,255,0,0.5)',
-        "circle-radius": 15,
+        "circle-radius": 45,
         "circle-blur": 1.3
     },
     "filter": ["!=", "cluster", true]
