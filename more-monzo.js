@@ -158,7 +158,6 @@ function calculateMapCentre(geoCoordinates){
   var x = y = z = 0;
 
   for (var key in geoCoordinates) {
-  //for (var i = 0; i < Object.keys(geoCoordinates).length; i++) {
     var latitude = geoCoordinates[key].lat * Math.PI / 180;
     var longitude = geoCoordinates[key].long * Math.PI / 180;
     x += Math.cos(latitude) * Math.cos(longitude);
@@ -225,22 +224,15 @@ function penceToPounds(value){
 
 function addHeatmap(){
   console.log('Adding heatmap');
-  // Add a new source from our GeoJSON data and set the
-  // 'cluster' option to true.
   mapSpend.addSource("heatspends", {
     type: "geojson",
-    // Point to GeoJSON data. This example visualizes all M1.0+ earthquakes
-    // from 12/22/15 to 1/21/16 as logged by USGS' Earthquake hazards program.
     data: null,
     cluster: true,
     clusterMaxZoom: 20, // Max zoom to cluster points on
     clusterRadius: 25 // Use small cluster radius for the heatmap look
   });
 
-  // Use the earthquakes source to create four layers:
-  // three for each cluster category, and one for unclustered points
-
-  // Each point range gets a different fill color.
+  //each point range gets a different fill color.
   var layers = [
     [0, 'green'],
     [10, 'orange'],
