@@ -6,4 +6,5 @@
   <li>Summary of total spending</li>
   <li>Toggle map indicators</li></ul>
 <h2>Preview</h2>
-<p><iframe src='https://gfycat.com/ifr/WhisperedDefiniteDarklingbeetle' frameborder='0' scrolling='no' width='2808' height='1432' allowfullscreen></iframe></p>
+<p><img src='https://giant.gfycat.com/WhisperedDefiniteDarklingbeetle.gif'/></p>
+<
