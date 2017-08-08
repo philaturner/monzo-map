@@ -5,4 +5,5 @@
   <li>Dynamically adjusted heatmap</li>
   <li>Summary of total spending</li>
   <li>Toggle map indicators</li></ul>
-<p><img src="https://preview.ibb.co/jnqhBa/Screen_Shot_2017_08_08_at_20_42_54.png" alt="Monzo Map" border="1"></p>
+<h2>Preview</h2>
+<p><iframe src='https://gfycat.com/ifr/WhisperedDefiniteDarklingbeetle' frameborder='0' scrolling='no' width='2808' height='1432' allowfullscreen></iframe></p>
