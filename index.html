@@ -4,36 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Monzo Map</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="assets/styles.css">
     <script src="libraries/p5.js" type="text/javascript"></script>
     <script src="libraries/p5.dom.js" type="text/javascript"></script>
     <script src="libraries/p5.sound.js" type="text/javascript"></script>
-    <script src="more-monzo.js" type="text/javascript"></script>
+    <script src="js/more-monzo.js" type="text/javascript"></script>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.js'></script>
     <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css?family=Saira" rel="stylesheet">
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.css' rel='stylesheet' />
   </head>
 
 <header>
-<h1>Monzo Spend Map</h1>
-<h2>Using Mapbox</h2>
+<div id ="logos"><a href='https://github.com/philaturner/monzo-map' target ="_blank"><img id ="gitlogo" src = "assets/github-logo.png"/></a></div>
+<div id ="title">
+  <h1>Monzo Spend Map</h1>
+  <h2>Using Mapbox</h2>
+<div>
 </header>
 <body>
-  <div class="login">
+  <div id="login-form">
+    <div id="login-error">
+      <span>Something went wrong - check your details and try again</span>
+    </div>
+    <h2>Load your data</h2>
     <p>You'll need to generate an access token from <a href="https://developers.monzo.com" target ="_blank">Monzo Developers</a> to view your data.</p>
-    <p>Access Token:
-      <input type="text" name="atoken" id="atoken" value="">
-    </p>
-    <p>Account ID:
+    <p>Account ID<br>
       <input type="text" name="uacc" id="uacc" value="">
+
+    <br>Access Token<br>
+      <input type="password" name="atoken" id="atoken" value="">
     </p>
-    <button class="button" id="btnsubmit">Map Me</button>
-    <!-- <p>
-      <font color = "red">Please ensure correct details are added - no error handling</font>
-    </p> -->
+    <p><button class="button" id="btnsubmit">Map Spend</button></p>
   </div>
     <div class="map">
-      <h3>Your spend map:</h3>
+
       <div id="map">
         <nav id="menu"></nav>
         <div class="stats" id="stat-text">

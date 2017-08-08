@@ -81,8 +81,10 @@ function callbackHandler(reponse, type){
     let mData = createMapboxJSON(user.locations);
     if (mData != undefined) mapSpend.getSource('purchases').setData(mData);
     addHeatmap();
+    addCircles();
     if (mData != undefined) mapSpend.getSource('heatspends').setData(mData);
-    console.log(mapSpend);
+    if (mData != undefined) mapSpend.getSource('dynamic-circles').setData(mData);
+    //console.log(mapSpend);
     user.geojson = mData;
     populateStatsDOM();
   }
@@ -121,6 +123,7 @@ function setup(){
           "type": "symbol",
           "source": "purchases",
           "layout": {
+              "visibility": "none",
                "icon-image": "marker-15",
           }
       });
@@ -134,8 +137,15 @@ function setup(){
         .addTo(mapSpend);
   });
 
-  var toggleableLayerLabels = [ 'markers', 'heatmap'];
-  var toggleableLayerIds = [ 'purchases', 'heatmap'];
+  mapSpend.on('click', 'dynamic-circles', function (e) {
+    new mapboxgl.Popup()
+        .setLngLat(e.features[0].geometry.coordinates)
+        .setHTML(e.features[0].properties.description)
+        .addTo(mapSpend);
+  });
+
+  var toggleableLayerLabels = [ 'markers', 'heatmap', 'circles'];
+  var toggleableLayerIds = [ 'purchases', 'heatmap', 'dynamic-circles'];
 
   for (var i = 0; i < toggleableLayerIds.length; i++) {
       var id = toggleableLayerIds[i];
@@ -145,9 +155,15 @@ function setup(){
 
       var link = document.createElement('a');
       link.href = '#';
-      link.className = 'active';
+      //only make circles active
+      if (id == 'dynamic-circles') {
+        link.className = 'active';
+      } else {
+        link.className = '';
+      }
       link.textContent = label;
       link.idContent = id;
+
 
       link.onclick = function (e) {
           var clickedLayer = this.idContent;
@@ -196,6 +212,10 @@ function populateStatsDOM(){
   topMerc.elt.innerText = mercString;
   let statBox = select('#stat-text');
   statBox.style('visibility', 'visible');
+  let loginForm = select('#login-form');
+  loginForm.style('visibility', 'hidden');
+  let menu = select('#menu');
+  menu.style('visibility', 'visible');
 }
 
 function calculateMapCentre(geoCoordinates){
@@ -253,15 +273,37 @@ function createMapboxJSON(data){
 
     childObject.properties.title = key;
     childObject.properties.description = buildPopupDesc(data[key].name, data[key].spend, data[key].google, data[key].trans);
+    childObject.properties.trans = data[key].trans;
     childObject.geometry.coordinates = [data[key].long,data[key].lat];
     childObject.geometry.type = 'Point';
+
+    //define spend group and add to object
+    var x = data[key].spend/100;
+    //console.log(x);
+      switch (true) {
+        case (x < 11):
+          childObject.properties.spendgroup = 'bottom';
+          break;
+        case (x > 10 && x < 26):
+          childObject.properties.spendgroup = 'lower';
+          break;
+        case (x > 25 && x < 51):
+          childObject.properties.spendgroup = 'mid';
+          break;
+        case (x > 50 && x < 101):
+          childObject.properties.spendgroup = 'upper';
+          break;
+        default:
+          childObject.properties.spendgroup = 'top';
+          break;
+}
 
     mainObject.features.push(childObject);
   }
 
   console.log('Marking the map!');
   //let myJSON = JSON.stringify(mainObject);
-  //console.log(myJSON);
+  //console.log(mainObject);
   return mainObject
 }
 
@@ -292,17 +334,20 @@ function addHeatmap(){
 
   //each point range gets a different fill color.
   var layers = [
-    [1, 'green'],
-    [7, 'orange'],
-    [15, 'red']
+    [g, 'green'],
+    [o, 'orange'],
+    [r, 'red']
   ];
 
-  console.log(layers);
+  //console.log(layers);
   layers.forEach(function (layer, i) {
     mapSpend.addLayer({
         "id": "cluster-" + i,
         "type": "circle",
         "source": "heatspends",
+        "layout": {
+            "visibility": "none"
+        },
         "paint": {
             "circle-color": layer[1],
             "circle-radius": 45,
@@ -320,6 +365,9 @@ function addHeatmap(){
     "id": "heatmap",
     "type": "circle",
     "source": "heatspends",
+    "layout": {
+        "visibility": "none"
+    },
     "paint": {
         "circle-color": 'rgba(0,255,0,0.5)',
         "circle-radius": 45,
@@ -327,4 +375,36 @@ function addHeatmap(){
     },
     "filter": ["!=", "cluster", true]
   }, 'waterway-label');
+  //mapSpend.setLayoutProperty(this, 'visibility', 'none');
+}
+
+function addCircles(){
+  console.log('Adding circles');
+  mapSpend.addSource("dynamic-circles", {
+    type: "geojson",
+    data: null,
+  });
+  mapSpend.addLayer({
+    'id': 'dynamic-circles',
+    'type': 'circle',
+    "source": "dynamic-circles",
+    'paint': {
+        // make circles larger as the user zooms from z12 to z22
+        'circle-radius': {
+            'base': 4,
+            'stops': [[12, 7], [22, 180]]
+        },
+        // color circles by ethnicity, using data-driven styles
+        'circle-color': {
+            property: 'spendgroup',
+            type: 'categorical',
+            stops: [
+                ['bottom', '#789E73'],
+                ['lower', '#C0E7D2'],
+                ['mid', '#F6BD5B'],
+                ['upper', '#F08C5E'],
+                ['top', '#B24130']]
+        }
+    }
+  });
 }
