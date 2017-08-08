@@ -5,4 +5,4 @@
   <li>Dynamically adjusted heatmap</li>
   <li>Summary of total spending</li>
   <li>Toggle map indicators</li></ul>
-<p><img src="https://preview.ibb.co/es8ppv/screen_shot.jpg" alt="Monzo Map" border="1"></p>
+<p><img src="https://preview.ibb.co/jnqhBa/Screen_Shot_2017_08_08_at_20_42_54.png" alt="Monzo Map" border="1"></p>
