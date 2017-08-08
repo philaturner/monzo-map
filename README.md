@@ -7,4 +7,3 @@
   <li>Toggle map indicators</li></ul>
 <h2>Preview</h2>
 <p><img src='https://giant.gfycat.com/WhisperedDefiniteDarklingbeetle.gif'/></p>
-<
