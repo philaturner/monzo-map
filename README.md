@@ -13,4 +13,5 @@
 <li>Dynamically adjust 3d block heights based on average spend</li>
 <li>Better tooltips</li>
 <li>Auto centre map around big point clusters</li>
-<li>Add better currency support</li></ul>
+<li>Add better currency support</li>
+<li>Fix hacky CSS</li></ul>
