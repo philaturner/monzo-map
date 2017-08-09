@@ -76,16 +76,21 @@ function callbackHandler(reponse, type){
     user.transTotal = (totalAmount/100);
     user.totalTransaction = totalTransaction;
     user.topMerch = [topMerchant.name,penceToPounds(topMerchant.spend/100)];
-    mapSpend.setCenter(calculateMapCentre(user.locations));
 
-    let mData = createMapboxJSON(user.locations);
+    //mapSpend.setCenter(calculateMapCentre(user.locations));
+    mapSpend.setCenter(pickRandomPoint(user.locations));
+
+    let mData = createMapboxJSON(user.locations, 'Point');
+    let pData = createMapboxJSON(user.locations, 'Polygon');
     if (mData != undefined) mapSpend.getSource('purchases').setData(mData);
     addHeatmap();
     addCircles();
     if (mData != undefined) mapSpend.getSource('heatspends').setData(mData);
     if (mData != undefined) mapSpend.getSource('dynamic-circles').setData(mData);
+    if (pData != undefined) mapSpend.getSource('room-extrusion').setData(pData);
     //console.log(mapSpend);
     user.geojson = mData;
+    user.polyjson = pData;
     populateStatsDOM();
   }
 }
@@ -112,7 +117,10 @@ function setup(){
     container: 'map', // container id
     style: 'mapbox://styles/mapbox/dark-v9', // map style
     center: [-2.2, 53.48], // default position [lng, lat]
-    zoom: 5.8
+    //zoom: 8
+    zoom: 15.2,
+    pitch: 40
+    //bearing: 20
      // starting zoom
   });
   mapSpend.on('load', function () {
@@ -218,6 +226,17 @@ function populateStatsDOM(){
   menu.style('visibility', 'visible');
 }
 
+function pickRandomPoint(geoCoordinates){
+  console.log('Picking random point');
+  let result;
+    let count = 0;
+    for (var prop in geoCoordinates)
+        if (Math.random() < 1/++count)
+           result = prop;
+    //console.log(result);
+    return {lng: geoCoordinates[result].long, lat: geoCoordinates[result].lat}
+}
+
 function calculateMapCentre(geoCoordinates){
   console.log('Calculating Centre');
   let cLon, cLat;
@@ -255,7 +274,7 @@ function calculateMapCentre(geoCoordinates){
 }
 
 //creates Mapbox JSON based on Monzo data
-function createMapboxJSON(data){
+function createMapboxJSON(data, type){
   console.log('Transactions:',data);
   var mainObject = {};
 
@@ -274,8 +293,11 @@ function createMapboxJSON(data){
     childObject.properties.title = key;
     childObject.properties.description = buildPopupDesc(data[key].name, data[key].spend, data[key].google, data[key].trans);
     childObject.properties.trans = data[key].trans;
-    childObject.geometry.coordinates = [data[key].long,data[key].lat];
-    childObject.geometry.type = 'Point';
+
+    if (type == 'Point') childObject.geometry.coordinates = [data[key].long,data[key].lat];
+
+    //add type based on input i.e Point or Polygon
+    childObject.geometry.type = type;
 
     //define spend group and add to object
     let x = data[key].spend/100;
@@ -297,7 +319,15 @@ function createMapboxJSON(data){
         default:
           childObject.properties.spendgroup = 'top';
           break;
-}
+        }
+
+      if (type == 'Polygon') {
+        childObject.geometry.coordinates = createPolygonCoords([data[key].long,data[key].lat], 1);
+        childObject.properties.height = data[key].spend / 5;
+        childObject.properties.base_height = 0;
+        childObject.properties.color = getColour(childObject.properties.spendgroup);
+        childObject.properties.level = 1;
+      }
 
     mainObject.features.push(childObject);
   }
@@ -408,4 +438,74 @@ function addCircles(){
         }
     }
   });
+  mapSpend.addLayer({
+    'id': 'room-extrusion',
+    'type': 'fill-extrusion',
+    'source': {
+            // Geojson Data source used in vector tiles, documented at
+            // https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
+            'type': 'geojson',
+            'data': null
+            //'data': 'indoor-3d-map.geojson'
+        },
+    'paint': {
+        // See the Mapbox Style Spec for details on property functions
+        // https://www.mapbox.com/mapbox-gl-style-spec/#types-function
+        'fill-extrusion-color': {
+            // Get the fill-extrusion-color from the source 'color' property.
+            'property': 'color',
+            'type': 'identity'
+        },
+        'fill-extrusion-height': {
+            // Get fill-extrusion-height from the source 'height' property.
+            'property': 'height',
+            'type': 'identity'
+        },
+        'fill-extrusion-base': {
+            // Get fill-extrusion-base from the source 'base_height' property.
+            'property': 'base_height',
+            'type': 'identity'
+        },
+        // Make extrusions slightly opaque for see through indoor walls.
+        'fill-extrusion-opacity': 0.6
+    }
+});
+}
+
+function createPolygonCoords(centre, radius){
+  //console.log(centre);
+  tempArr = [];
+  mainArr = [];
+  //create 5 polygon coords based on centre
+  //for (i = 0; i < 5; i++){
+    let units = radius/10000;
+    //console.log(units);
+    tempArr.push([centre[0] + units, centre[1]]);
+    //tempArr.push(centre[1]);
+    tempArr.push([centre[0], centre[1] + units]);
+    //tempArr[1].push(centre[1] + units);
+    tempArr.push([centre[0] - units, centre[1]]);
+    //tempArr[2].push(centre[1]);
+    tempArr.push([centre[0], centre[1] - units]);
+    //tempArr[3].push(centre[1] - units);
+    tempArr.push([centre[0] + units, centre[1]]);
+    //tempArr[4].push(centre[1]);
+  //}
+  mainArr.push(tempArr);
+  //console.log(mainArr);
+  return mainArr;
+}
+
+function getColour(group){
+  var objects = {
+    'bottom': '#789E73',
+    'lower': '#C0E7D2',
+    'mid': '#F6BD5B',
+    'upper': '#F08C5E',
+    'top': '#B24130'
+  }
+  //console.log(group);
+  for(key in objects) {
+    if (key == group) return objects[key]
+  }
 }
