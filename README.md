@@ -6,4 +6,4 @@
   <li>Summary of total spending</li>
   <li>Toggle map indicators</li></ul>
 <h2>Preview</h2>
-<p><img src='https://giant.gfycat.com/WhisperedDefiniteDarklingbeetle.gif'/></p>
+<p><img src='https://giant.gfycat.com/RightApprehensiveAntelopegroundsquirrel.gif'/></p>
