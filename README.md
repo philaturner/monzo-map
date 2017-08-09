@@ -14,4 +14,5 @@
 <li>Better tooltips</li>
 <li>Auto centre map around big point clusters</li>
 <li>Add better currency support</li>
+<li>Fix heatmap staying green in certain circumstances</li>
 <li>Fix hacky CSS</li></ul>
