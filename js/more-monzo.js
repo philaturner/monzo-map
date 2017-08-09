@@ -278,19 +278,20 @@ function createMapboxJSON(data){
     childObject.geometry.type = 'Point';
 
     //define spend group and add to object
-    var x = data[key].spend/100;
+    let x = data[key].spend/100;
+    let perc = floor((x / user.transTotal) * 100); //Calculate spend percentage
     //console.log(x);
       switch (true) {
-        case (x < 11):
+        case (perc < 4):
           childObject.properties.spendgroup = 'bottom';
           break;
-        case (x > 10 && x < 26):
+        case (perc > 3 && perc < 8):
           childObject.properties.spendgroup = 'lower';
           break;
-        case (x > 25 && x < 51):
+        case (perc > 7 && perc < 16):
           childObject.properties.spendgroup = 'mid';
           break;
-        case (x > 50 && x < 101):
+        case (perc > 15 && perc < 31):
           childObject.properties.spendgroup = 'upper';
           break;
         default:
