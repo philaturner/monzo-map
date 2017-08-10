@@ -166,6 +166,24 @@ function setup(){
         .addTo(mapSpend);
   });
 
+  //TODO Fix console error spam
+    var popup = new mapboxgl.Popup({
+      closeButton: false,
+      closeOnClick: false
+    });
+
+    mapSpend.on('mouseenter', 'dynamic-circles', function(e) {
+      mapSpend.getCanvas().style.cursor = 'pointer';
+      popup.setLngLat(e.features[0].geometry.coordinates)
+          .setHTML(e.features[0].properties.description)
+          .addTo(mapSpend);
+    });
+
+    mapSpend.on('mouseleave', 'dynamic-circles', function() {
+      mapSpend.getCanvas().style.cursor = '';
+      popup.remove();
+    });
+
   var toggleableLayerLabels = ['towers', 'circles', 'markers', 'heatmap'];
   var toggleableLayerIds = ['room-extrusion', 'dynamic-circles','purchases', 'heatmap'];
 
