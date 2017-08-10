@@ -32,6 +32,12 @@ xhr.onload = function (e) {
       console.log('Data fetched');
       callbackHandler(xhr.responseText, xhr.onpgrogess);
     }
+    else {
+      console.log('Error;', xhr.responseText);
+      let errorBox = select('#login-error');
+      errorBox.style('visibility', 'visible');
+      setInterval(function(){ errorBox.style('visibility', 'hidden'); }, 4000);
+    }
   }
 };
 

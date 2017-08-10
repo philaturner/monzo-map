@@ -132,13 +132,15 @@
     padding-bottom: 5px;
   }
   #login-error {
+    display: inline-block;
     visibility: hidden;
     width: 100%;
-    color: #9F6000;
+    line-height: 30px;
+    color: #ff0000;
     background-color: #FEEFB3;
     position: absolute;
     text-align: center;
-    top: -10px;
+    top: 0px;
     left: 0px;
     padding-bottom: 10px;
   }
