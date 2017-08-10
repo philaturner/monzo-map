@@ -90,7 +90,7 @@
     font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   }
   #stat-text{
-    background: rgba(207, 83, 0, 0.7);
+    background: rgba(207, 83, 0, 1);
     color: #fff;
     position: absolute;
     visibility: hidden;
@@ -207,6 +207,30 @@
     box-shadow: 0 0 8px #88D5E9;
     border: 1px solid #88D5E9;
   }
+
+  #fly {
+    display: block;
+    position: absolute;
+    visibility: hidden;
+    z-index: 2;
+    margin: 0px auto;
+    top: 100px;
+    right: 10px;
+    width: 150px;
+    height: 40px;
+    padding: 10px;
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+    text-align: center;
+    color: #fff;
+    background: #4CAF50;
+  }
+  #fly:hover{
+    color: #000;
+    background: #4CAFF0;
+  }
+
   @media (max-width: 750px){
     #login-form {
       width: 50%;
@@ -216,8 +240,12 @@
 
   @media (max-width: 549px){
     #stat-text{
-      top: auto;
-      bottom: 15px;
+      width: 20%;
+    }
+    #fly{
+      width: 22%;
+      top: 145px;
+      font-size: 11px;
     }
     #login-form {
       width: 70%;

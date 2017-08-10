@@ -68,6 +68,7 @@ function callbackHandler(reponse, type){
         if (mainArr[key].spend > topMerchant.spend){
           topMerchant.name = mainArr[key].name;
           topMerchant.spend = mainArr[key].spend;
+          topMerchant.geo = {'lng': mainArr[key].long, 'lat': mainArr[key].lat};  //{lng: -2.21850099, lat: 53.839239}
         }
       }
     }
@@ -75,10 +76,12 @@ function callbackHandler(reponse, type){
     user.locations = mainArr;
     user.transTotal = (totalAmount/100);
     user.totalTransaction = totalTransaction;
-    user.topMerch = [topMerchant.name,penceToPounds(topMerchant.spend/100)];
+    user.topMerch = [topMerchant.name,penceToPounds(topMerchant.spend/100),topMerchant.geo];
 
+    //define where to load after login
     //mapSpend.setCenter(calculateMapCentre(user.locations));
     mapSpend.setCenter(pickRandomPoint(user.locations));
+    //flyToRandom(pickRandomPoint(user.locations)); //flies to random point after login
 
     let mData = createMapboxJSON(user.locations, 'Point');
     let pData = createMapboxJSON(user.locations, 'Polygon');
@@ -112,6 +115,11 @@ function intialCall(){
 function setup(){
   var button = select('#btnsubmit');
   button.mousePressed(intialCall);
+
+  document.getElementById('fly').addEventListener('click', function() {
+    console.log('Button Click');
+    flyToRandom(user.topMerch[2]); //fly to top trans
+  });
 
   mapSpend = new mapboxgl.Map({
     container: 'map', // container id
@@ -211,6 +219,8 @@ function setup(){
 
 function populateStatsDOM(){
   console.log('Adding stats to DOM');
+  let statBox = select('#stat-text');
+  statBox.style('visibility', 'visible');
   let amount = select('#value');
   let transTot = select('#trans');
   let topMerc = select('#merchant');
@@ -218,12 +228,12 @@ function populateStatsDOM(){
   transTot.elt.innerText = user.totalTransaction;
   let mercString = ' ' + user.topMerch[0] + ' (£' + user.topMerch[1] + ')';
   topMerc.elt.innerText = mercString;
-  let statBox = select('#stat-text');
-  statBox.style('visibility', 'visible');
   let loginForm = select('#login-form');
   loginForm.style('visibility', 'hidden');
   let menu = select('#menu');
   menu.style('visibility', 'visible');
+  let flyButton = select('#fly');
+  flyButton.style('visibility', 'visible');
 }
 
 function pickRandomPoint(geoCoordinates){
@@ -323,7 +333,7 @@ function createMapboxJSON(data, type){
 
       if (type == 'Polygon') {
         childObject.geometry.coordinates = createPolygonCoords([data[key].long,data[key].lat], 1);
-        childObject.properties.height = data[key].spend / 5;
+        childObject.properties.height = perc * 50; //add tower to be based on percentage spend * 100 per %
         childObject.properties.base_height = 0;
         childObject.properties.color = getColour(childObject.properties.spendgroup);
         childObject.properties.level = 1;
@@ -508,4 +518,27 @@ function getColour(group){
   for(key in objects) {
     if (key == group) return objects[key]
   }
+}
+
+function flyToRandom(end){  //start, end, atStart
+  console.log('Lets fly!');
+  let start = mapSpend.getCenter();
+  let atStart = true;
+
+  let target = atStart ? end : start;
+
+  atStart = !atStart;
+
+  mapSpend.flyTo({
+    center: target,
+    zoom: 15.5,
+    speed: 0.5, // make the flying slow
+    curve: 1, // change the speed at which it zooms out
+
+    // This can be any easing function: it takes a number between
+    // 0 and 1 and returns another number between 0 and 1.
+    easing: function (t) {
+        return t;
+    }
+  });
 }
