@@ -166,8 +166,8 @@ function setup(){
         .addTo(mapSpend);
   });
 
-  var toggleableLayerLabels = [ 'markers', 'heatmap', 'circles'];
-  var toggleableLayerIds = [ 'purchases', 'heatmap', 'dynamic-circles'];
+  var toggleableLayerLabels = ['towers', 'circles', 'markers', 'heatmap'];
+  var toggleableLayerIds = ['room-extrusion', 'dynamic-circles','purchases', 'heatmap'];
 
   for (var i = 0; i < toggleableLayerIds.length; i++) {
       var id = toggleableLayerIds[i];
@@ -178,7 +178,7 @@ function setup(){
       var link = document.createElement('a');
       link.href = '#';
       //only make circles active
-      if (id == 'dynamic-circles') {
+      if (id == 'dynamic-circles' || id == 'room-extrusion') {
         link.className = 'active';
       } else {
         link.className = '';
@@ -375,9 +375,9 @@ function addHeatmap(){
   });
 
   //calculate point density based on total transactions
-  let g = 1 ;
-  let o = user.totalTransaction/2;
-  let r = floor(user.totalTransaction*0.8);
+  let g = 1;
+  let o = user.totalTransaction/4;
+  let r = floor(user.totalTransaction*0.75);
 
   //each point range gets a different fill color.
   var layers = [
