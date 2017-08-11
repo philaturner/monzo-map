@@ -59,6 +59,7 @@ function callbackHandler(reponse, type){
           'long': user.data.transactions[i].merchant.address.longitude,
           'lat': user.data.transactions[i].merchant.address.latitude,
           'google': user.data.transactions[i].merchant.metadata.google_places_icon,
+          'category': user.data.transactions[i].category,
           'spend': 0,
           'trans': 0,
         }
@@ -152,30 +153,65 @@ function setup(){
   //addHeatmap();
   });
 
-  mapSpend.on('click', 'purchases', function (e) {
-    new mapboxgl.Popup()
-        .setLngLat(e.features[0].geometry.coordinates)
-        .setHTML(e.features[0].properties.description)
-        .addTo(mapSpend);
-  });
-
-  mapSpend.on('click', 'dynamic-circles', function (e) {
-    new mapboxgl.Popup()
-        .setLngLat(e.features[0].geometry.coordinates)
-        .setHTML(e.features[0].properties.description)
-        .addTo(mapSpend);
-  });
+  // mapSpend.on('click', 'dynamic-circles', function (e) {
+  //   new mapboxgl.Popup()
+  //       .setLngLat(e.features[0].geometry.coordinates)
+  //       .setHTML(e.features[0].properties.description)
+  //       .addTo(mapSpend);
+  // });
 
   //TODO Fix console error spam
+  var markerHeight = 50, markerRadius = 10, linearOffset = 25;
+  var popupOffsets = {
+   'top': [0, 0],
+   'top-left': [markerHeight/3,markerHeight/3],
+   'top-right': [0,0],
+   'bottom': [0, -markerHeight],
+   'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+   'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
+   'left': [markerRadius, (markerHeight - markerRadius) * -1],
+   'right': [-markerRadius, (markerHeight - markerRadius) * -1]
+  };
+
+    // var popup = new mapboxgl.Popup({
+    //   closeButton: false,
+    //   closeOnClick: false,
+    //   offset: popupOffsets,
+    //   anchor: 'top-left'
+    // });
+
+    var div = window.document.createElement('tooltip');
+    //div.innerHTML = buildPopupDesc()
     var popup = new mapboxgl.Popup({
       closeButton: false,
-      closeOnClick: false
+      closeOnClick: false,
+      offset: popupOffsets,
+      anchor: 'top-left'
+    })
+      //.setLngLat(e.lngLat)
+      // .setDOMContent(div)
+      // .addTo(mapSpend);
+
+    var div1 = document.getElementById("tooltip");
+
+    mapSpend.on('click', 'purchases', function (e) {
+      div1.innerHTML = e.features[0].properties.c;
+      new mapboxgl.Popup({
+        closeButton: true,
+        closeOnClick: true,
+        offset: popupOffsets,
+        anchor: 'top-left'
+      })
+          .setLngLat(e.features[0].geometry.coordinates)
+          .setDOMContent(div1)
+          .addTo(mapSpend);
     });
 
     mapSpend.on('mouseenter', 'dynamic-circles', function(e) {
       mapSpend.getCanvas().style.cursor = 'pointer';
+      div1.innerHTML = e.features[0].properties.c;
       popup.setLngLat(e.features[0].geometry.coordinates)
-          .setHTML(e.features[0].properties.description)
+          .setDOMContent(div1)
           .addTo(mapSpend);
     });
 
@@ -183,6 +219,18 @@ function setup(){
       mapSpend.getCanvas().style.cursor = '';
       popup.remove();
     });
+
+    //increase the opacity of the block on mouse hover
+    mapSpend.on('mouseenter', 'room-extrusion', function(e) {
+      mapSpend.setPaintProperty('room-extrusion', 'fill-extrusion-opacity', 1);
+    });
+
+    mapSpend.on('mouseleave', 'room-extrusion', function() {
+      mapSpend.setPaintProperty('room-extrusion', 'fill-extrusion-opacity', 0.5);
+    });
+
+
+    //mapSpend.setPaintProperty('room-extrusion', 'fill-extrusion-opacity', 1);
 
   var toggleableLayerLabels = ['towers', 'circles', 'markers', 'heatmap'];
   var toggleableLayerIds = ['room-extrusion', 'dynamic-circles','purchases', 'heatmap'];
@@ -325,8 +373,9 @@ function createMapboxJSON(data, type){
     childObject.geometry = {};
 
     childObject.properties.title = key;
-    childObject.properties.description = buildPopupDesc(data[key].name, data[key].spend, data[key].google, data[key].trans);
+    childObject.properties.c = buildPopupDesc(data[key].name, data[key].spend, data[key].google, data[key].trans, data[key].category);
     childObject.properties.trans = data[key].trans;
+    childObject.properties.category = data[key].category;
 
     if (type == 'Point') childObject.geometry.coordinates = [data[key].long,data[key].lat];
 
@@ -372,10 +421,16 @@ function createMapboxJSON(data, type){
   return mainObject
 }
 
-function buildPopupDesc (name, spend, image, trans){
+function buildPopupDesc (name, spend, image, trans, category){
   let value = penceToPounds((spend/100));
-  let spendPerc = ((spend/100) / user.transTotal) * 100
-  return "<strong><font color = #4CAFF0><img src ='" + image + "'width=12/> " + name + "</font></strong><p>You have spent £" + value + " here<br>This is " + spendPerc.toFixed(2) + "% out of all spends<br>"+ trans +" transaction(s) at this location</p>"
+  let spendPerc = ((spend/100) / user.transTotal) * 100;
+  let wholeSpend = floor(spend/100);
+  let catName = category.replace(/_/g, " ").replace(/^./, function(str){ return str.toUpperCase(); });
+  //old builder
+  //return "<strong><font color = #4CAFF0><img src ='" + image + "'width=12/> " + name + "</font></strong><p>You have spent £" + value + " here<br>This is " + spendPerc.toFixed(2) + "% out of all spends<br>"+ trans +" transaction(s) at this location</p>"
+  //return "<img src ='assets/icons/" + category + ".png' width=50/>";
+  return "<style>#tooltip{z-index: 6;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "<br>(" + catName + ")</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>£" + wholeSpend + "</div>";
+
 }
 
 function penceToPounds(value){
@@ -394,8 +449,8 @@ function addHeatmap(){
 
   //calculate point density based on total transactions
   let g = 1;
-  let o = user.totalTransaction/4;
-  let r = floor(user.totalTransaction*0.75);
+  let o = floor(user.totalTransaction*0.2);
+  let r = floor(user.totalTransaction*0.55);
 
   //each point range gets a different fill color.
   var layers = [
@@ -502,6 +557,7 @@ function addCircles(){
         },
         // Make extrusions slightly opaque for see through indoor walls.
         'fill-extrusion-opacity': 0.6
+        //mapSpend.setPaintProperty(room-extrusion, 'fill-extrusion-opacity', 1);
     }
 });
 }
