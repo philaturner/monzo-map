@@ -110,18 +110,33 @@ function preload(){
   noCanvas();
 }
 
-function intialCall(){
-  let atoken = select('#atoken');
-  let uacc = select('#uacc');
-  user.access_token = atoken.value();
-  user.acc_id = uacc.value();
+function intialCall(sampledata){
   console.log('Getting Data');
-  user.getData();
+  if(!sampledata){
+    let atoken = select('#atoken');
+    let uacc = select('#uacc');
+    user.access_token = atoken.value();
+    user.acc_id = uacc.value();
+    user.getData();
+  } else {
+    console.log('Using sample data');
+    loadJSON('data/sample-data.json', gotData);
+  }
+}
+
+function gotData(data){
+  let dataStr = JSON.stringify(data);
+  callbackHandler(dataStr,user.getAdvTrans);
 }
 
 function setup(){
-  var button = select('#btnsubmit');
-  button.mousePressed(intialCall);
+  //button event listeners
+  document.getElementById("btnsubmit").addEventListener("click", function(){
+    intialCall(false);
+  });
+  document.getElementById("samplesubmit").addEventListener("click", function(){
+    intialCall(true);
+  });
 
   document.getElementById('fly').addEventListener('click', function() {
     console.log('Button Click');
