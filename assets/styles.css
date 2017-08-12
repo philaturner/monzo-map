@@ -36,8 +36,10 @@
     line-height: 20px;
     padding-top: 10px;
     text-align: center;
-    z-index: 1;
+    z-index: 2;
     top: 30px;
+  }
+  #monzologo{
   }
   #logos{
     position:absolute;
