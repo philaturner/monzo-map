@@ -7,7 +7,7 @@
   <li>Toggle map indicators</li>
   <li>3D spend blocks</li></ul>
 <h2>Preview</h2>
-<p><img src="https://preview.ibb.co/dgfhWa/Screen_Shot_2017_08_12_at_00_44_14.png" /></p>
+<p><img src="https://preview.ibb.co/hi6Uwa/Screen_Shot_2017_08_12_at_14_41_53.png" /></p>
 <p><a href="https://giant.gfycat.com/NeatAbandonedCockatiel.webm" target="_blank">Video Preview Here</a></p>
 <h2>//TODO</h2
 <ul><li>Re-work messy code</li>
