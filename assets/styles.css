@@ -1,24 +1,24 @@
   * {
-    font-family: 'Open Sans';
+    font-family: 'Mada';
     margin: 0;
     padding: 0;
   }
   h1 {
-    font-family: 'Saira';
+    font-family: 'Mada';
     padding-top: 10px;
     margin-bottom: auto;
     text-align: center;
     text-decoration: none;
-    color: #4CAFF0;
+    color: #E64B5F;
     padding-left: 5px;
-    font-size: 32px;
+    font-size: 42px;
   }
   p {
     padding-left: 5px;
     padding-bottom: 5px;
   }
   h2 {
-    color: #fff;
+    color: #f5f5f5;
     text-align: center;
     text-decoration: none;
     margin-top: 1px;
@@ -31,7 +31,7 @@
     padding-top: 5px;
   }
   header {
-    background-color: rgb(48,48,48);
+    background-color: #14233C;
     margin: 0;
     padding: 0;
   }
@@ -51,8 +51,8 @@
     filter: alpha(opacity=100); /* For IE8 and earlier */
   }
   .button {
-    font-family: 'Saira';
-    background-color: #4CAF50; /* Green */
+    font-family: 'Mada';
+    background-color: #50B9DC; /* light blue */
     border: none;
     color: white;
     padding: 6px 6px;
@@ -64,11 +64,11 @@
     width: 100px;
   }
   .button:hover {
-    background-color: #4CAFF0;
+    background-color: #E64B5F;
   }
   .button-sample {
-    font-family: 'Saira';
-    background-color: #9a9a9a; /* Green */
+    font-family: 'Mada';
+    background-color: #9a9a9a; /* grey */
     border: none;
     color: white;
     padding: 6px 6px;
@@ -80,7 +80,7 @@
     width: 180px;
   }
   .button-sample:hover {
-    background-color: #4CAFF0;
+    background-color: #E64B5F;
   }
   #map {
     position:absolute;
@@ -103,7 +103,7 @@
   }
   .mapboxgl-popup {
     max-width: 1000px;
-    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font: 12px/20px 'Mada', Arial, Helvetica, sans-serif;
   }
   #tooltip{
     top: 0px;
@@ -117,7 +117,7 @@
     width: 250px;
     height: 60px;
     border: 1px solid rgba(0,0,0,0.4);
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Mada', sans-serif;
   }
   #logo{
     margin-top: 5px;
@@ -146,7 +146,7 @@
     padding-right: 5px;
   }
   #stat-text{
-    background: rgba(207, 83, 0, 1);
+    background: #EB824B;
     color: #fff;
     position: absolute;
     visibility: hidden;
@@ -154,11 +154,11 @@
     z-index: 1;
     top: 15px;
     right: 10px;
-    font-size: 13px;
+    font-size: 14px;
     border-radius: 1px;
     width: 160px;
     border: 1px solid rgba(0,0,0,0.4);
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Mada', sans-serif;
     text-align: center;
     padding: 5px 5px 5px 5px;
   }
@@ -172,7 +172,7 @@
     width: 30%;
     text-align: center;
     border: 1px solid rgba(0,0,0,0.4);
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Mada', sans-serif;
     padding: 15px 15px 15px 15px;
     /*-webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
@@ -183,8 +183,8 @@
 
   }
   #login-form h2 {
-    font-family: 'Saira';
-    color: rgba(207, 83, 0, 1);
+    font-family: 'Mada';
+    color: #EB824B;
     font-size: 26px;
     padding-bottom: 3px;
   }
@@ -215,7 +215,7 @@
     border-radius: 1px;
     width: 90px;
     border: 1px solid rgba(0,0,0,0.4);
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Mada', sans-serif;
   }
 
   #menu a {
@@ -235,22 +235,22 @@
   }
 
   #menu a:hover {
-    background-color: #f8f8f8;
-    color: #404040;
+    background-color: #E64B5F;
+    color: #ffffff;
   }
 
   #menu a.active {
-    background-color: #3887be;
+    background-color: #50B9DC;
     color: #ffffff;
   }
 
   #menu a.active:hover {
-    background: #3074a4;
+    background: #E64B5F;
   }
 
   input,
   select{
-    font-family: 'Saira';
+    font-family: 'Mada';
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -284,14 +284,14 @@
     padding: 10px;
     border: none;
     border-radius: 3px;
-    font-size: 12px;
+    font-size: 14px;
     text-align: center;
     color: #fff;
-    background: #4CAF50;
+    background: #50B9DC;
   }
   #fly:hover{
-    color: #000;
-    background: #4CAFF0;
+    color: #fff;
+    background: #E64B5F;
   }
 
   @media (max-width: 750px){
