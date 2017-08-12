@@ -17,4 +17,7 @@
 <li>Add better currency support</li>
 <li><s>Add sample data option</s></li>
 <li>Fix heatmap staying green in certain circumstances</li>
-<li>Fix hacky CSS</li></ul>
+<li>Fix hacky CSS</li>
+<li>Add timeline mode - not sure what this is yet!</li>
+<li>Add some basic graphical overlays</li>
+<li>Handle mobile devices better</li></ul>
