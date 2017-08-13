@@ -1,6 +1,15 @@
 var xhr = new XMLHttpRequest()
 var mapSpend;
 
+var currency = {
+  'codes': currcodes,
+  getCurrencySymbol: function(code){
+    for (var key in this.codes){
+      if (key == code) return this.codes[key]
+    }
+  }
+}
+
 var user = {
   'acc_string': '&account_id=',
   'acc_id': '',
@@ -60,6 +69,7 @@ function callbackHandler(reponse, type){
           'lat': user.data.transactions[i].merchant.address.latitude,
           'google': user.data.transactions[i].merchant.metadata.google_places_icon,
           'category': user.data.transactions[i].category,
+          'currency': user.data.transactions[i].currency,
           'spend': 0,
           'trans': 0,
         }
@@ -77,6 +87,7 @@ function callbackHandler(reponse, type){
           topMerchant.spend = mainArr[key].spend;
           topMerchant.geo = {'lng': mainArr[key].long, 'lat': mainArr[key].lat};  //{lng: -2.21850099, lat: 53.839239}
           topMerchant.trans = mainArr[key].trans;
+          user.currency = mainArr[key].currency;
         }
       }
     }
@@ -312,7 +323,7 @@ function populateStatsDOM(){
   let topMerc = select('#merchant');
   amount.elt.innerText = user.transTotal;
   transTot.elt.innerText = user.totalTransaction;
-  let mercString = ' ' + user.topMerch[0] + ' (£' + user.topMerch[1] + ')';
+  let mercString = ' ' + user.topMerch[0] + ' (' + currency.getCurrencySymbol(user.currency) + user.topMerch[1] + ')';
   topMerc.elt.innerText = mercString;
 
   let loginForm = select('#login-form');
@@ -445,14 +456,11 @@ function buildPopupDesc (name, spend, image, trans, category, type){
   let spendPerc = ((spend/100) / user.transTotal) * 100;
   let wholeSpend = floor(spend/100);
   let catName = category.replace(/_/g, " ").replace(/^./, function(str){ return str.toUpperCase(); });
-  //old builder
-  //return "<strong><font color = #4CAFF0><img src ='" + image + "'width=12/> " + name + "</font></strong><p>You have spent £" + value + " here<br>This is " + spendPerc.toFixed(2) + "% out of all spends<br>"+ trans +" transaction(s) at this location</p>"
-  //return "<img src ='assets/icons/" + category + ".png' width=50/>";
-  console.log(type);
+
   if (type == 'tooltip'){
-    return "<style>#" + type + "{z-index: 6;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "<br>(" + catName + ")</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>£" + wholeSpend + "</div>";
+    return "<style>#" + type + "{z-index: 6;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "<br>(" + catName + ")</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>"+ currency.getCurrencySymbol(user.currency) + wholeSpend + "</div>";
   } else {
-    return "<style>#" + type + "{z-index: 6;} #content{margin-top: 5px;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>£" + wholeSpend + "</div>";
+    return "<style>#" + type + "{z-index: 6;} #content{margin-top: 5px;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>"+ currency.getCurrencySymbol(user.currency) + wholeSpend + "</div>";
   }
 }
 
@@ -542,11 +550,11 @@ function addCircles(){
             property: 'spendgroup',
             type: 'categorical',
             stops: [
-                ['bottom', '#789E73'],
-                ['lower', '#C0E7D2'],
-                ['mid', '#F6BD5B'],
-                ['upper', '#F08C5E'],
-                ['top', '#B24130']]
+                ['bottom', app_info.spend_level_colours.bottom],
+                ['lower', app_info.spend_level_colours.lower],
+                ['mid', app_info.spend_level_colours.mid],
+                ['upper', app_info.spend_level_colours.upper],
+                ['top', app_info.spend_level_colours.top]]
         }
     }
   });
@@ -586,24 +594,17 @@ function addCircles(){
 }
 
 function createPolygonCoords(centre, radius){
-  //console.log(centre);
   tempArr = [];
   mainArr = [];
+
   //create 5 polygon coords based on centre
-  //for (i = 0; i < 5; i++){
-    let units = radius/10000;
-    //console.log(units);
-    tempArr.push([centre[0] + units, centre[1]]);
-    //tempArr.push(centre[1]);
-    tempArr.push([centre[0], centre[1] + units]);
-    //tempArr[1].push(centre[1] + units);
-    tempArr.push([centre[0] - units, centre[1]]);
-    //tempArr[2].push(centre[1]);
-    tempArr.push([centre[0], centre[1] - units]);
-    //tempArr[3].push(centre[1] - units);
-    tempArr.push([centre[0] + units, centre[1]]);
-    //tempArr[4].push(centre[1]);
-  //}
+  let units = radius/10000;
+  tempArr.push([centre[0] + units, centre[1]]);
+  tempArr.push([centre[0], centre[1] + units]);
+  tempArr.push([centre[0] - units, centre[1]]);
+  tempArr.push([centre[0], centre[1] - units]);
+  tempArr.push([centre[0] + units, centre[1]]);
+
   mainArr.push(tempArr);
   //console.log(mainArr);
   return mainArr;

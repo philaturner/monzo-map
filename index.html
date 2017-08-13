@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>monzo map | a community api project</title>
     <link rel="icon" type="image/png" href="/assets/map_logo.png" />
-    <link rel="stylesheet" type="text/css" href="assets/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
     <script src="libraries/p5.js" type="text/javascript"></script>
     <script src="libraries/p5.dom.js" type="text/javascript"></script>
     <script src="libraries/p5.sound.js" type="text/javascript"></script>
-    <script src="js/more-monzo.js" type="text/javascript"></script>
+    <script src="js/currency/currency-map.js" type="text/javascript"></script>
+    <script src="js/source/app.js" type="text/javascript"></script>
+    <script src="js/source/monzo-map.js" type="text/javascript"></script>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.js'></script>
     <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css?family=Saira" rel="stylesheet">
@@ -18,9 +20,9 @@
   </head>
 
 <header>
-<div id ="logos"><a href='https://github.com/philaturner/monzo-map' target ="_blank"><img id ="gitlogo" src = "assets/github-logo.png"/></a></div>
+<div id ="logos"><a href='https://github.com/philaturner/monzo-map' target ="_blank"><img id ="gitlogo" src = "assets/logos/github-logo.png"/></a></div>
 <div id ="title">
-  <div id='monzo'><img id='monzologo' src='assets/map_logo.png' height=60px/>
+  <div id='monzo'><img id='monzologo' src='assets/logos/map_logo.png' height=60px/>
   <h1>monzo map</h1>
   <h2>a community api project</h2>
   </div>
