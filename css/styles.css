@@ -246,17 +246,18 @@
   }
 
   #menu a:hover {
-    background-color: #E64B5F;
+    background-color: #E1B982;
+    font-size: 14px;
     color: #ffffff;
   }
 
   #menu a.active {
-    background-color: #50B9DC;
+    background-color: #E64B5F;
     color: #ffffff;
   }
 
   #menu a.active:hover {
-    background: #E64B5F;
+    font-size: 14px;
   }
 
   #feed {
@@ -340,11 +341,11 @@
     font-size: 15px;
     text-align: center;
     color: #fff;
-    background: #50B9DC;
+    background: #E64B5F;
   }
   #fly:hover{
     color: #fff;
-    background: #E64B5F;
+    background: #E1B982;
   }
 
   @media (max-width: 750px){

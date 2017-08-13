@@ -8,7 +8,7 @@ var app_info = {
     'green': '#9ABBA8',
     'yellow': '#E1B982',
     'orange': '#EB824B',
-    'red': '#E64B5F',
+    'pink': '#E64B5F',
     'light_blue': '#50B9CD'
   },
   'monzo_cat_colours': {
