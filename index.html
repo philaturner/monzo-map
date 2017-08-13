@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Monzo Map</title>
+    <title>monzo map | a community api project</title>
+    <link rel="icon" type="image/png" href="/assets/map_logo.png" />
     <link rel="stylesheet" type="text/css" href="assets/styles.css">
     <script src="libraries/p5.js" type="text/javascript"></script>
     <script src="libraries/p5.dom.js" type="text/javascript"></script>
@@ -39,11 +40,12 @@
       <input type="password" name="atoken" id="atoken" value="">
     </p>
     <p><button class="button" id="btnsubmit">Map Spend</button></p>
-    <p><button class="button-sample" id="samplesubmit">Explore Sample Data</button></p>
+    <p><button class="button-sample" id="samplesubmit">Preview Sample Data</button></p>
   </div>
     <div class="map">
       <div id="map">
         <nav id="menu"></nav>
+        <nav id="feed"></nav>
         <div id="tooltip">
           <div id='logo'>
             <img src='assets/icons/eating_out.png' width=50/>

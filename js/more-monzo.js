@@ -76,6 +76,7 @@ function callbackHandler(reponse, type){
           topMerchant.name = mainArr[key].name;
           topMerchant.spend = mainArr[key].spend;
           topMerchant.geo = {'lng': mainArr[key].long, 'lat': mainArr[key].lat};  //{lng: -2.21850099, lat: 53.839239}
+          topMerchant.trans = mainArr[key].trans;
         }
       }
     }
@@ -83,7 +84,7 @@ function callbackHandler(reponse, type){
     user.locations = mainArr;
     user.transTotal = (totalAmount/100);
     user.totalTransaction = totalTransaction;
-    user.topMerch = [topMerchant.name,penceToPounds(topMerchant.spend/100),topMerchant.geo];
+    user.topMerch = [topMerchant.name,penceToPounds(topMerchant.spend/100),topMerchant.geo,topMerchant.trans];
 
     //define where to load after login
     //mapSpend.setCenter(calculateMapCentre(user.locations));
@@ -102,6 +103,7 @@ function callbackHandler(reponse, type){
     user.geojson = mData;
     user.polyjson = pData;
     populateStatsDOM();
+    buildCategoryFeed();
   }
 }
 
@@ -244,9 +246,6 @@ function setup(){
       mapSpend.setPaintProperty('room-extrusion', 'fill-extrusion-opacity', 0.5);
     });
 
-
-    //mapSpend.setPaintProperty('room-extrusion', 'fill-extrusion-opacity', 1);
-
   var toggleableLayerLabels = ['towers', 'circles', 'markers', 'heatmap'];
   var toggleableLayerIds = ['room-extrusion', 'dynamic-circles','purchases', 'heatmap'];
 
@@ -306,8 +305,8 @@ function setup(){
 
 function populateStatsDOM(){
   console.log('Adding stats to DOM');
-  let statBox = select('#stat-text');
-  statBox.style('visibility', 'visible');
+  // let statBox = select('#stat-text');
+  // statBox.style('visibility', 'visible');
   let amount = select('#value');
   let transTot = select('#trans');
   let topMerc = select('#merchant');
@@ -315,10 +314,15 @@ function populateStatsDOM(){
   transTot.elt.innerText = user.totalTransaction;
   let mercString = ' ' + user.topMerch[0] + ' (£' + user.topMerch[1] + ')';
   topMerc.elt.innerText = mercString;
+
   let loginForm = select('#login-form');
   loginForm.style('visibility', 'hidden');
   let menu = select('#menu');
   menu.style('visibility', 'visible');
+  let feed = select('#feed');
+  feed.style('visibility', 'visible');
+  let tooltips = select('#tooltip');
+  tooltips.style('visibility', 'visible');
   let flyButton = select('#fly');
   flyButton.style('visibility', 'visible');
 }
@@ -388,7 +392,7 @@ function createMapboxJSON(data, type){
     childObject.geometry = {};
 
     childObject.properties.title = key;
-    childObject.properties.c = buildPopupDesc(data[key].name, data[key].spend, data[key].google, data[key].trans, data[key].category);
+    childObject.properties.c = buildPopupDesc(data[key].name, data[key].spend, data[key].google, data[key].trans, data[key].category, 'tooltip');
     childObject.properties.trans = data[key].trans;
     childObject.properties.category = data[key].category;
 
@@ -436,7 +440,7 @@ function createMapboxJSON(data, type){
   return mainObject
 }
 
-function buildPopupDesc (name, spend, image, trans, category){
+function buildPopupDesc (name, spend, image, trans, category, type){
   let value = penceToPounds((spend/100));
   let spendPerc = ((spend/100) / user.transTotal) * 100;
   let wholeSpend = floor(spend/100);
@@ -444,8 +448,12 @@ function buildPopupDesc (name, spend, image, trans, category){
   //old builder
   //return "<strong><font color = #4CAFF0><img src ='" + image + "'width=12/> " + name + "</font></strong><p>You have spent £" + value + " here<br>This is " + spendPerc.toFixed(2) + "% out of all spends<br>"+ trans +" transaction(s) at this location</p>"
   //return "<img src ='assets/icons/" + category + ".png' width=50/>";
-  return "<style>#tooltip{z-index: 6;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "<br>(" + catName + ")</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>£" + wholeSpend + "</div>";
-
+  console.log(type);
+  if (type == 'tooltip'){
+    return "<style>#" + type + "{z-index: 6;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "<br>(" + catName + ")</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>£" + wholeSpend + "</div>";
+  } else {
+    return "<style>#" + type + "{z-index: 6;} #content{margin-top: 5px;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>£" + wholeSpend + "</div>";
+  }
 }
 
 function penceToPounds(value){
@@ -636,4 +644,45 @@ function flyToRandom(end){  //start, end, atStart
         return t;
     }
   });
+}
+
+function buildCategoryFeed(){
+  tempArr = {};
+  for (var key in user.locations) {
+    let newKey = user.locations[key].category
+    tempArr[newKey] = {
+      'spend' : 0,
+      'transactions' : 0
+    }
+  }
+  for (var key in user.locations) {
+    let newKey = user.locations[key].category
+    tempArr[newKey].spend += user.locations[key].spend
+    tempArr[newKey].transactions ++;
+  }
+
+  let topMerchant = {
+    'name': user.topMerch[0],
+    'spend': user.topMerch[1],
+    'transactions': user.topMerch[3]
+  }
+
+  //loop through feed and create feed items
+  for (var key in tempArr) {
+    let id = 'feed' + i;
+    let label = key.replace(/_/g, " ").replace(/^./, function(str){ return str.toUpperCase(); });;
+    let spend = tempArr[key].spend;
+    let cat = key;
+    let trans = tempArr[key].transactions;
+
+
+    let link = document.createElement('a');
+    link.href = '#';
+    link.className = 'active';
+    link.idContent = id;
+    link.innerHTML = buildPopupDesc (label, spend, 'hello', trans, cat, 'feed');
+
+    let feedLayer = document.getElementById('feed');
+    feedLayer.appendChild(link);
+  }
 }
