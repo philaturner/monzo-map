@@ -237,13 +237,6 @@ function setup(){
    'right': [-markerRadius, (markerHeight - markerRadius) * -1]
   };
 
-    // var popup = new mapboxgl.Popup({
-    //   closeButton: false,
-    //   closeOnClick: false,
-    //   offset: popupOffsets,
-    //   anchor: 'top-left'
-    // });
-
     var div = window.document.createElement('tooltip');
     //div.innerHTML = buildPopupDesc()
     var popup = new mapboxgl.Popup({
@@ -252,9 +245,6 @@ function setup(){
       offset: popupOffsets,
       anchor: 'top-left'
     })
-      //.setLngLat(e.lngLat)
-      // .setDOMContent(div)
-      // .addTo(mapSpend);
 
     var div1 = document.getElementById("tooltip");
 
@@ -503,7 +493,7 @@ function buildPopupDesc (name, spend, image, trans, category, type){
   let catName = category.replace(/_/g, " ").replace(/^./, function(str){ return str.toUpperCase(); });
 
   if (type == 'tooltip'){
-    return "<style>#" + type + "{z-index: 6;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "<br>(" + catName + ")</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>"+ currency.getCurrencySymbol(user.currency) + wholeSpend + "</div>";
+    return "<style>#" + type + "{z-index: 6;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "</p><p>(" + catName + ")</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>"+ currency.getCurrencySymbol(user.currency) + wholeSpend + "</div>";
   } else {
     return "<style>#" + type + "{z-index: 6;} #content{margin-top: 5px;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>"+ currency.getCurrencySymbol(user.currency) + wholeSpend + "</div>";
   }
@@ -715,7 +705,7 @@ function buildCategoryFeed(){
 
   //loop through feed and create feed items
   for (var key in tempArr) {
-    let id = 'feed' + i;
+    let id = key;
     let label = key.replace(/_/g, " ").replace(/^./, function(str){ return str.toUpperCase(); });;
     let spend = tempArr[key].spend;
     let cat = key;
@@ -724,9 +714,41 @@ function buildCategoryFeed(){
 
     let link = document.createElement('a');
     link.href = '#';
-    link.className = 'active';
+    link.className = '';
     link.idContent = id;
     link.innerHTML = buildPopupDesc (label, spend, 'hello', trans, cat, 'feed');
+    user.lastClickedCat = '';
+
+    link.onclick = function (e) {
+      var clicked = this.idContent;
+      if (clicked == user.lastClickedCat){
+        mapSpend.setFilter('dynamic-circles', null);
+        this.className = '';
+        user.lastClickedCat = '';
+        return
+      }
+      user.lastClickedCat = clicked;
+      e.preventDefault();
+      e.stopPropagation();
+
+      setMapFilter('dynamic-circles',clicked);
+      setMapFilter('room-extrusion',clicked);
+      setMapFilter('purchases',clicked);
+      setMapFilter('heatmap',clicked);
+
+      this.className = 'active';
+
+      //loop through other children and remove class name
+      if (feedLayer){
+        feedChildren = feedLayer.childNodes;
+        for (var i = 0; i < feedChildren.length; i++) {
+          if (feedChildren[i].idContent != this.idContent){
+            feedChildren[i].className = '';
+          }
+        }
+      }
+
+    }
 
     let feedLayer = document.getElementById('feed');
     feedLayer.appendChild(link);
@@ -742,4 +764,8 @@ function dayDifference(date1, date2){
   var secondDate = new Date(date2);
 
   return Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+}
+
+function setMapFilter(layer_name,filter_name){
+  mapSpend.setFilter(layer_name, ['in', 'category', filter_name]);
 }
