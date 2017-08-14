@@ -723,6 +723,9 @@ function buildCategoryFeed(){
       var clicked = this.idContent;
       if (clicked == user.lastClickedCat){
         mapSpend.setFilter('dynamic-circles', null);
+        mapSpend.setFilter('room-extrusion', null);
+        mapSpend.setFilter('purchases', null);
+        mapSpend.setFilter('heatmap', null);
         this.className = '';
         user.lastClickedCat = '';
         return
