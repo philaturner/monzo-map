@@ -373,8 +373,11 @@ function populateStatsDOM(){
   let flyButton = select('#fly');
   flyButton.style('visibility', 'visible');
 
-  let graphBlock = select('#graph-container')
+  let graphBlock = select('#graph-container');
   graphBlock.style('display', 'block');
+
+  let mapBox = select('#map');
+  mapBox.style('height', 'calc(100vh - 150px')  //min-height: calc(100vh - 100px);
 
   graphLine.firstRun();
   graphLine.loop();

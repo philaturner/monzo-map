@@ -5,10 +5,12 @@
   }
   h1 {
     font-family: 'Mada';
-    text-align: center;
+    text-align: left;
     text-decoration: none;
     color: #fff;
     font-size: 42px;
+    padding-top: 20px;
+    line-height: 35px;
   }
   p {
     padding-left: 5px;
@@ -18,9 +20,7 @@
     color: #E64B5F;
     text-align: center;
     text-decoration: none;
-    margin-top: 10px;
-    padding-left: 5px;
-    padding-bottom: 20px;
+    padding-bottom: 5px;
     font-size: 18px;
   }
   h3 {
@@ -32,16 +32,16 @@
   a:hover {color:#E64B5F;}  /* mouse over link */
   a:active {color:#fff;}  /* selected link */
   header {
+    text-align: center;
     background-color: #14233C;
     margin: 0;
     padding: 0;
   }
   #monzo{
-    line-height: 20px;
+    float: left;
     padding-top: 10px;
     text-align: center;
     z-index: 2;
-    top: 30px;
   }
   #monzologo{
   }
@@ -95,7 +95,7 @@
   #map {
     position:absolute;
     width: 100%;
-    height: 81%;
+    height: calc(100vh - 100px);
   }
   div.login{
     float: left;
@@ -144,10 +144,13 @@
     float: left;
     /*padding-right: 20px;*/
   }
-  .title{
-    color: #000;
-    font-size: 14px;
-    line-height: 18px;
+  #title{
+    text-align: center;
+    display: inline-block;
+  }
+  #title-text{
+    float: right;
+    text-align: left;
   }
   #spend{
     padding-top: 20px;
@@ -264,7 +267,7 @@
     visibility: hidden;
     position: absolute;
     z-index: 20;
-    top: 215px;
+    top: 169px;
     left: 115px;
     width: 170px;
     padding-top: 5px;
@@ -376,10 +379,11 @@
     background: #E1B982;
   }
   #graph-container{
-    display: none;
     z-index: 10;
-    /*position: block;*/
+    display: none;
     top: 0px;
+    left: 0px;
+    width: 100%;
     height: 50px;
     background-color: #9a9a9a;
   }
