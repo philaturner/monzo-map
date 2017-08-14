@@ -10,7 +10,7 @@
   <li>Preview features with sample data</li></ul>
 <h2>Preview</h2>
 <p><img src="https://preview.ibb.co/neqRRa/Screen_Shot_2017_08_13_at_11_28_59.png" /></p>
-<p><a href="https://giant.gfycat.com/EnlightenedUnfortunateLamb.webm">Video Preview Here</a></p>
+<p><a href="https://giant.gfycat.com/VelvetyWelloffAmericanavocet.webm">Video Preview Here</a></p>
 <h2>//TODO</h2
 <ul><li>Re-work messy code</li>
 <li><s>Dynamically adjust 3d block heights based on average spend</s></li>
