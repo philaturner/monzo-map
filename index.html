@@ -6,12 +6,16 @@
     <title>monzo map | a community api project</title>
     <link rel="icon" type="image/png" href="/assets/map_logo.png" />
     <link rel="stylesheet" type="text/css" href="css/styles.css">
-    <script src="libraries/p5.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.12/addons/p5.sound.min.js"></script>
+    <!-- <script src="libraries/p5.js" type="text/javascript"></script>
     <script src="libraries/p5.dom.js" type="text/javascript"></script>
-    <script src="libraries/p5.sound.js" type="text/javascript"></script>
+    <script src="libraries/p5.sound.js" type="text/javascript"></script> -->
     <script src="js/currency/currency-map.js" type="text/javascript"></script>
     <script src="js/source/app.js" type="text/javascript"></script>
     <script src="js/source/monzo-map.js" type="text/javascript"></script>
+    <script src="js/graph/render.js" type="text/javascript"></script>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.39.1/mapbox-gl.js'></script>
     <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
     <link href="https://fonts.googleapis.com/css?family=Saira" rel="stylesheet">
@@ -20,6 +24,7 @@
   </head>
 
 <header>
+
 <div id ="logos"><a href='https://github.com/philaturner/monzo-map' target ="_blank"><img id ="gitlogo" src = "assets/logos/github-logo.png"/></a></div>
 <div id ="title">
   <div id='monzo'><img id='monzologo' src='assets/logos/map_logo.png' height=60px/>
@@ -27,8 +32,13 @@
   <h2>a community api project</h2>
   </div>
 <div>
+<div id='graph-container'></div>
 </header>
 <body>
+  <div id="daily-spend">
+    <div id='spend-content'><p id='title'>Daily Spend</p>
+    <div id='spend-date'><p>Tue, 13th August 2017</p></div></div><div id='spendamount'>£13</div></p>
+  </div>
   <div id="login-form">
     <div id="login-error">
       <span>Something went wrong - check your details and try again</span>

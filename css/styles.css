@@ -260,6 +260,34 @@
     font-size: 14px;
   }
 
+  #daily-spend {
+    visibility: hidden;
+    position: absolute;
+    z-index: 20;
+    top: 215px;
+    left: 115px;
+    width: 170px;
+    padding-top: 5px;
+    /*line-height: 22px;*/
+    font-size: 14px;
+    font-family: 'Mada', sans-serif;
+    color: #fff;
+    background-color: #50B9CD;
+  }
+  #spend-content {
+    float: left;
+  }
+  #spend-date {
+    margin-left: 5px;
+    padding-bottom: 5px;
+  }
+  #spendamount {
+    float: right;
+    padding-top: 5px;
+    padding-right: 10px;
+    font-size: 25px;
+  }
+
   #feed {
     position: absolute;
     z-index: 1;
@@ -347,6 +375,14 @@
     color: #fff;
     background: #E1B982;
   }
+  #graph-container{
+    display: none;
+    z-index: 10;
+    /*position: block;*/
+    top: 0px;
+    height: 50px;
+    background-color: #9a9a9a;
+  }
 
   @media (max-width: 750px){
     #login-form {
@@ -373,6 +409,7 @@
     }
     #monzologo{
       display: none;
+      z-index: 20;
     }
     h1{
       margin-top: 10px;

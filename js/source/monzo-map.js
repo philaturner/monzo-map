@@ -96,6 +96,41 @@ function callbackHandler(reponse, type){
     user.transTotal = (totalAmount/100);
     user.totalTransaction = totalTransaction;
     user.topMerch = [topMerchant.name,penceToPounds(topMerchant.spend/100),topMerchant.geo,topMerchant.trans];
+    let len = user.data.transactions.length;
+    user.dates = {
+      'first': user.data.transactions[0].created,
+      'last': user.data.transactions[len-1].created,
+      'spend': {},
+      'max_spend': 0,
+      'spend_array': [],
+      difference: function(){
+        return dayDifference(this.first, this.last)
+      },
+      spendByDate: function(){
+        let diff = this.difference(this.first,this.last)
+        //loop through all dates and set 0 values
+        for (i = 0; i < diff; i++){
+          let baseDate = new Date(this.first);
+          let newDate = new Date(baseDate.getTime() );
+          newDate.setDate(newDate.getDate() + i);
+          let key = newDate.toDateString();
+          this.spend[key] = 0;
+        }
+        //loop through transactions and add values to dates
+        for (i = 0; i < user.data.transactions.length; i++){
+          if (user.data.transactions[i].include_in_spending){
+            let tempDate = new Date(user.data.transactions[i].created);
+            let key = tempDate.toDateString();
+            this.spend[key] =+ user.data.transactions[i].amount * -1;
+          }
+        }
+        //add max daily spend to user object
+        for (var key in this.spend){
+          if (this.spend[key] > this.max_spend) this.max_spend = this.spend[key];
+        }
+        return this.spend
+      }
+    }
 
     //define where to load after login
     //mapSpend.setCenter(calculateMapCentre(user.locations));
@@ -113,14 +148,15 @@ function callbackHandler(reponse, type){
     //console.log(mapSpend);
     user.geojson = mData;
     user.polyjson = pData;
-    populateStatsDOM();
     buildCategoryFeed();
+    user.dates.spendByDate();
+    populateStatsDOM();
   }
 }
 
 function preload(){
   mapboxgl.accessToken = 'pk.eyJ1IjoicGhpbGF0dXJuZXIiLCJhIjoiY2oyMzl2bmg1MDAxbDJ3bXVzdTQ2YzFwNCJ9.DYG613tp1aT7jYZdPCbUQw';
-  noCanvas();
+  //noCanvas();
 }
 
 function intialCall(sampledata){
@@ -336,6 +372,12 @@ function populateStatsDOM(){
   tooltips.style('visibility', 'visible');
   let flyButton = select('#fly');
   flyButton.style('visibility', 'visible');
+
+  let graphBlock = select('#graph-container')
+  graphBlock.style('display', 'block');
+
+  graphLine.firstRun();
+  graphLine.loop();
 }
 
 function pickRandomPoint(geoCoordinates){
@@ -686,4 +728,15 @@ function buildCategoryFeed(){
     let feedLayer = document.getElementById('feed');
     feedLayer.appendChild(link);
   }
+}
+
+//dayDifference('2017-07-20T14:54:57.687Z','2017-07-30T14:54:57.687Z');
+function dayDifference(date1, date2){
+  var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+
+  //make string a date
+  var firstDate = new Date(date1);
+  var secondDate = new Date(date2);
+
+  return Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
 }
