@@ -22,14 +22,11 @@ var graphCanvas = function( p ) {
   };
 
   p.draw = function() {
-    p.background(61);
+    p.background(51);
     p.frameRate(15);
     p.noFill();
-    p.stroke(255);
+    p.stroke(200);
     let spacing = windowWidth/len;
-    // y = random(0,height);
-    // history.push(y);
-
 
     p.beginShape();
     //for (var i = 0; i < len; i++){
@@ -38,11 +35,12 @@ var graphCanvas = function( p ) {
       let ny = 0;
       let amount = (user.dates.spend[key])/100;
 
-      //TODO fix top value scaling
       ny = map(amount,1,user.dates.max_spend/100,10,height-5);
       ny = height - ny;
       nodes.push([nx,ny,floor(user.dates.spend[key]/100),key]);
+
       p.vertex(nx,ny);
+      p.noFill();
       p.fill(255);
       p.ellipse(nx,ny,5,5);
       p.noFill();
@@ -51,41 +49,35 @@ var graphCanvas = function( p ) {
     p.endShape();
 
     //check mouse over node
-    p.fill(255,255,255,0.7);
+    p.fill(255,255,255,0.3);
     for (var i = 0; i < nodes.length; i ++){
       if (mouseX < nodes[i][0] + spacing/2 && mouseX > nodes[i][0] - spacing/2){
         if (mouseY > 0-55 && mouseY < height-55){
-          //p.noStroke();
-
-          //rect at mouse
-          //p.rect(mouseX,mouseY+55,100,30);
-          //p.fill(255,255,255);
-          //p.textSize(16);
-        //  p.text(nodes[i][3] + ': ' + currency.getCurrencySymbol(user.currency) + nodes[i][2],mouseX+10,mouseY+55);
-          //p.noFill();
-        //  p.fill(255,255,255,0.3);
-          //hover rectangle
           p.rect(nodes[i][0]-spacing/2,0,spacing,height-5);
           dailySpend.style('visibility', 'visible');
           spendDiv = document.getElementById("spendamount");
           spendDiv.innerHTML = currency.getCurrencySymbol(user.currency) + nodes[i][2];
           spendDate = document.getElementById("spend-date");
           spendDate.innerHTML = nodes[i][3];
+          //draw pink ellipse
+          p.fill(80,185,220);
+          p.noStroke();
+          p.ellipse(nodes[i][0],nodes[i][1],10,10);
+          p.noFill();
         }
         else {
           dailySpend.style('visibility', 'hidden');
         }
       }
     }
-
     p.noFill();
+
     if (counter >= len-1){
       counter = 0;
       nodes = [];
       //p.clear();
       //p.noLoop();
     }
-
   };
 };
 var graphLine = new p5(graphCanvas, 'graph-container');
