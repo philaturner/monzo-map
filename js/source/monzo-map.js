@@ -70,6 +70,7 @@ function callbackHandler(reponse, type){
           'google': user.data.transactions[i].merchant.metadata.google_places_icon,
           'category': user.data.transactions[i].category,
           'currency': user.data.transactions[i].currency,
+          'country': user.data.transactions[i].merchant.address.country,
           'spend': 0,
           'trans': 0,
         }
@@ -87,6 +88,7 @@ function callbackHandler(reponse, type){
           topMerchant.spend = mainArr[key].spend;
           topMerchant.geo = {'lng': mainArr[key].long, 'lat': mainArr[key].lat};  //{lng: -2.21850099, lat: 53.839239}
           topMerchant.trans = mainArr[key].trans;
+          topMerchant.country = mainArr[key].country;
           user.currency = mainArr[key].currency;
         }
       }
@@ -214,6 +216,28 @@ function setup(){
                "icon-image": "marker-15",
           }
       });
+
+      //3d building layer
+      // mapSpend.addLayer({
+      //   'id': '3d-buildings',
+      //   'source': 'composite',
+      //   'source-layer': 'building',
+      //   'filter': ['==', 'extrude', 'true'],
+      //   'type': 'fill-extrusion',
+      //   'minzoom': 10,
+      //   'paint': {
+      //     'fill-extrusion-color': '#9a9a9a',
+      //     'fill-extrusion-height': {
+      //       'type': 'identity',
+      //       'property': 'height'
+      //     },
+      //     'fill-extrusion-base': {
+      //       'type': 'identity',
+      //       'property': 'min_height'
+      //     },
+      //     'fill-extrusion-opacity': 0.4
+      //   }
+      // });
   //addHeatmap();
   });
 
@@ -281,6 +305,12 @@ function setup(){
 
     mapSpend.on('mouseleave', 'room-extrusion', function() {
       mapSpend.setPaintProperty('room-extrusion', 'fill-extrusion-opacity', 0.5);
+    });
+
+    mapSpend.on('moveend', function() {
+      if (mapSpend.getZoom() < 3.5){
+        console.log('show something');
+      }
     });
 
   var toggleableLayerLabels = ['towers', 'circles', 'markers', 'heatmap'];
@@ -734,6 +764,7 @@ function buildCategoryFeed(){
       e.preventDefault();
       e.stopPropagation();
 
+      //loop through map layers and apply filters
       for (i = 0; i < app_info.map.layers.length; i++){
         setMapFilter(app_info.map.layers[i],clicked);
       }
