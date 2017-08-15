@@ -734,10 +734,9 @@ function buildCategoryFeed(){
       e.preventDefault();
       e.stopPropagation();
 
-      setMapFilter('dynamic-circles',clicked);
-      setMapFilter('room-extrusion',clicked);
-      setMapFilter('purchases',clicked);
-      setMapFilter('heatmap',clicked);
+      for (i = 0; i < app_info.map.layers.length; i++){
+        setMapFilter(app_info.map.layers[i],clicked);
+      }
 
       this.className = 'active';
 
