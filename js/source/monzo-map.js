@@ -89,6 +89,7 @@ function callbackHandler(reponse, type){
           topMerchant.geo = {'lng': mainArr[key].long, 'lat': mainArr[key].lat};  //{lng: -2.21850099, lat: 53.839239}
           topMerchant.trans = mainArr[key].trans;
           topMerchant.country = mainArr[key].country;
+          topMerchant.category = mainArr[key].category;
           user.currency = mainArr[key].currency;
         }
       }
@@ -97,6 +98,7 @@ function callbackHandler(reponse, type){
     user.locations = mainArr;
     user.transTotal = (totalAmount/100);
     user.totalTransaction = totalTransaction;
+    user.topMerchant = topMerchant;
     user.topMerch = [topMerchant.name,penceToPounds(topMerchant.spend/100),topMerchant.geo,topMerchant.trans];
     let len = user.data.transactions.length;
     user.dates = {
@@ -751,6 +753,8 @@ function buildCategoryFeed(){
 
     link.onclick = function (e) {
       var clicked = this.idContent;
+
+      //check last clicked and unfilter if same as last click
       if (clicked == user.lastClickedCat){
         //console.log(mapSpend.getStyle().layers);
         for (i = 0; i < app_info.map.layers.length; i++){
@@ -758,8 +762,17 @@ function buildCategoryFeed(){
         }
         this.className = '';
         user.lastClickedCat = '';
+        setFlyButton('visible');
         return
       }
+
+      //hide top merchant button if not included in filter clicked
+      if (clicked == user.topMerchant.category) {
+        setFlyButton('visible');
+      } else {
+        setFlyButton('hidden');
+      }
+
       user.lastClickedCat = clicked;
       e.preventDefault();
       e.stopPropagation();
@@ -801,4 +814,9 @@ function dayDifference(date1, date2){
 
 function setMapFilter(layer_name,filter_name){
   mapSpend.setFilter(layer_name, ['in', 'category', filter_name]);
+}
+
+function setFlyButton(display){
+  let flyButton = select('#fly');
+  flyButton.style('visibility', display);
 }
