@@ -722,10 +722,10 @@ function buildCategoryFeed(){
     link.onclick = function (e) {
       var clicked = this.idContent;
       if (clicked == user.lastClickedCat){
-        mapSpend.setFilter('dynamic-circles', null);
-        mapSpend.setFilter('room-extrusion', null);
-        mapSpend.setFilter('purchases', null);
-        mapSpend.setFilter('heatmap', null);
+        //console.log(mapSpend.getStyle().layers);
+        for (i = 0; i < app_info.map.layers.length; i++){
+          mapSpend.setFilter(app_info.map.layers[i], null);
+        }
         this.className = '';
         user.lastClickedCat = '';
         return

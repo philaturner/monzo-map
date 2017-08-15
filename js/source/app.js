@@ -27,5 +27,8 @@ var app_info = {
     'mid': '#F6BD5B',
     'upper': '#F08C5E',
     'top': '#B24130'
+  },
+  'map': {
+    'layers': ['dynamic-circles','room-extrusion','purchases','heatmap','cluster-0', 'cluster-1', 'cluster-2']
   }
 }
