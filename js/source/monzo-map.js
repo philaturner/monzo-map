@@ -226,27 +226,27 @@ function setup(){
       });
 
       //3d building layer
-      // mapSpend.addLayer({
-      //   'id': '3d-buildings',
-      //   'source': 'composite',
-      //   'source-layer': 'building',
-      //   'filter': ['==', 'extrude', 'true'],
-      //   'type': 'fill-extrusion',
-      //   'minzoom': 10,
-      //   'paint': {
-      //     'fill-extrusion-color': '#9a9a9a',
-      //     'fill-extrusion-height': {
-      //       'type': 'identity',
-      //       'property': 'height'
-      //     },
-      //     'fill-extrusion-base': {
-      //       'type': 'identity',
-      //       'property': 'min_height'
-      //     },
-      //     'fill-extrusion-opacity': 0.4
-      //   }
-      // });
-  //addHeatmap();
+      mapSpend.addLayer({
+        'id': '3d-buildings',
+        'source': 'composite',
+        'source-layer': 'building',
+        'filter': ['==', 'extrude', 'true'],
+        'type': 'fill-extrusion',
+        'minzoom': 10,
+        'paint': {
+          'fill-extrusion-color': '#9a9a9a',
+          'fill-extrusion-height': {
+            'type': 'identity',
+            'property': 'height'
+          },
+          'fill-extrusion-base': {
+            'type': 'identity',
+            'property': 'min_height'
+          },
+          'fill-extrusion-opacity': 0.4
+        }
+      });
+
   });
 
   // mapSpend.on('click', 'dynamic-circles', function (e) {
