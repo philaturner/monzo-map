@@ -640,19 +640,27 @@ function addCircles(){
     'id': 'room-extrusion',
     'type': 'fill-extrusion',
     'source': {
-            // Geojson Data source used in vector tiles, documented at
-            // https://gist.github.com/ryanbaumann/a7d970386ce59d11c16278b90dde094d
             'type': 'geojson',
             'data': null
-            //'data': 'indoor-3d-map.geojson'
         },
     'paint': {
-        // See the Mapbox Style Spec for details on property functions
-        // https://www.mapbox.com/mapbox-gl-style-spec/#types-function
         'fill-extrusion-color': {
             // Get the fill-extrusion-color from the source 'color' property.
-            'property': 'color',
-            'type': 'identity'
+            //'property': 'color',
+            //'type': 'identity'
+            property: 'category',
+            type: 'categorical',
+            stops: [
+                ['bills', app_info.monzo_cat_colours.bills],
+                ['cash', app_info.monzo_cat_colours.cash],
+                ['eating_out', app_info.monzo_cat_colours.eating_out],
+                ['entertainment', app_info.monzo_cat_colours.entertainment],
+                ['groceries', app_info.monzo_cat_colours.groceries],
+                ['holidays', app_info.monzo_cat_colours.holiday],
+                ['shopping', app_info.monzo_cat_colours.shopping],
+                ['transport', app_info.monzo_cat_colours.transport],
+                ['general', app_info.monzo_cat_colours.general]
+              ]
         },
         'fill-extrusion-height': {
             // Get fill-extrusion-height from the source 'height' property.
