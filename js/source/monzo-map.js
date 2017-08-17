@@ -530,11 +530,14 @@ function buildPopupDesc (name, spend, image, trans, category, type){
   let spendPerc = ((spend/100) / user.transTotal) * 100;
   let wholeSpend = floor(spend/100);
   let catName = category.replace(/_/g, " ").replace(/^./, function(str){ return str.toUpperCase(); });
+  let transLabel = ' Transaction';
+
+  if (trans > 1) transLabel = ' Transactions'
 
   if (type == 'tooltip'){
-    return "<style>#" + type + "{z-index: 6;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "</p><p>(" + catName + ")</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>"+ currency.getCurrencySymbol(user.currency) + wholeSpend + "</div>";
+    return "<style>#" + type + "{z-index: 6;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "</p><p>(" + catName + ")</p><p>" + trans + transLabel + "</p></div><div id='spend'>"+ currency.getCurrencySymbol(user.currency) + wholeSpend + "</div>";
   } else {
-    return "<style>#" + type + "{z-index: 6;} #content{margin-top: 5px;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "</p><p>" + trans + " Transaction(s)</p></div><div id='spend'>"+ currency.getCurrencySymbol(user.currency) + wholeSpend + "</div>";
+    return "<style>#" + type + "{z-index: 6;} #content{margin-top: 5px;}</style><div id='logo'><img src='assets/icons/" + category + ".png' width=50/></div><div id='content'><p class='title'>" + name + "</p><p>" + trans + transLabel + "</p></div><div id='spend'>"+ currency.getCurrencySymbol(user.currency) + wholeSpend + "</div>";
   }
 }
 
