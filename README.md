@@ -9,8 +9,8 @@ Mapping of Monzo spends with Mapbox api
 * Explore spending by location
 * Summary of spending by category
 * Filter map by spend category
-* Toggle map indicators
 * 3D spend blocks
+* Daily spend graph over time
 * Fly to top merchant
 * Dynamically adjusted heatmap
 * Preview features with sample data
