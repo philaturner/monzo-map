@@ -509,7 +509,8 @@ function createMapboxJSON(data, type){
 
       if (type == 'Polygon') {
         childObject.geometry.coordinates = createPolygonCoords([data[key].long,data[key].lat], 1);
-        childObject.properties.height = perc * 50; //add tower to be based on percentage spend * 100 per %
+        //childObject.properties.height = perc * 50; //add tower to be based on percentage spend * 100 per %
+        childObject.properties.height = spendToLog(data[key].spend) * 50;
         childObject.properties.base_height = 0;
         childObject.properties.color = getColour(childObject.properties.spendgroup);
         childObject.properties.level = 1;
@@ -838,4 +839,8 @@ function setMapFilter(layer_name,filter_name){
 function setFlyButton(display){
   let flyButton = select('#fly');
   flyButton.style('visibility', display);
+}
+
+function spendToLog(val) {
+  return Math.log(val) / Math.log(10)
 }
