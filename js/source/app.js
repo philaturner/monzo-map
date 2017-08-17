@@ -2,6 +2,7 @@ var app_info = {
   'name': 'monzo-map',
   'version': 'beta-0.0.1',
   'author': 'philaturner',
+  'twitter': '@flip_turner',
   'github': 'https://github.com/philaturner/monzo-map',
   'settings': 'TBC',
   'brand_colours': {
@@ -13,14 +14,15 @@ var app_info = {
     'dark_blue': '#14233C'
   },
   'monzo_cat_colours': {
-    'bills': 'a',
-    'cash': 'b',
-    'eating_out': 'a',
-    'entertainment': 'b',
-    'groceries': 'a',
-    'holiday': 'b',
-    'shopping': 'a',
-    'travel': 'b'
+    'bills': '#50B8DD',
+    'cash': '#9ABBAA',
+    'eating_out': '#E64B5F',
+    'entertainment': '#EB824B',
+    'groceries': '#F5B946',
+    'holiday': '#B882FC',
+    'shopping': '#F09696',
+    'transport': '#1C7890',
+    'general': '#9a9a9a'
   },
   'spend_level_colours': {
     'bottom': '#789E73',

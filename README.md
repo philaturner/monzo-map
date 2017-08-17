@@ -15,7 +15,7 @@ Mapping of Monzo spends with Mapbox api
 * Dynamically adjusted heatmap
 * Preview features with sample data
 
-## Preview</h2>
+## Preview
 
 ![Preview Image](https://preview.ibb.co/neqRRa/Screen_Shot_2017_08_13_at_11_28_59.png)
 

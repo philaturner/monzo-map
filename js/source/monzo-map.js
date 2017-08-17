@@ -173,13 +173,19 @@ function intialCall(sampledata){
     user.getData();
   } else {
     console.log('Using sample data');
-    loadJSON('data/sample-data.json', gotData);
+    //local dev sample data only
+    loadJSON('data/lf-sample-data.json', gotData, gotError);
   }
 }
 
 function gotData(data){
   let dataStr = JSON.stringify(data);
   callbackHandler(dataStr,user.getAdvTrans);
+}
+
+function gotError(data){
+  //live sample data fallback
+  loadJSON('data/sample-data.json', gotData, gotError);
 }
 
 function setup(){
@@ -614,14 +620,19 @@ function addCircles(){
         },
         // color circles by ethnicity, using data-driven styles
         'circle-color': {
-            property: 'spendgroup',
+            property: 'category',
             type: 'categorical',
             stops: [
-                ['bottom', app_info.spend_level_colours.bottom],
-                ['lower', app_info.spend_level_colours.lower],
-                ['mid', app_info.spend_level_colours.mid],
-                ['upper', app_info.spend_level_colours.upper],
-                ['top', app_info.spend_level_colours.top]]
+                ['bills', app_info.monzo_cat_colours.bills],
+                ['cash', app_info.monzo_cat_colours.cash],
+                ['eating_out', app_info.monzo_cat_colours.eating_out],
+                ['entertainment', app_info.monzo_cat_colours.entertainment],
+                ['groceries', app_info.monzo_cat_colours.groceries],
+                ['holidays', app_info.monzo_cat_colours.holiday],
+                ['shopping', app_info.monzo_cat_colours.shopping],
+                ['transport', app_info.monzo_cat_colours.transport],
+                ['general', app_info.monzo_cat_colours.general]
+              ]
         }
     }
   });
