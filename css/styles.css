@@ -336,6 +336,10 @@
   #feed a:hover #content{
     color: #E64B5F;
   }
+  #feed a:hover #logo{
+    -webkit-filter: saturate(2);
+    filter: saturate(2);
+  }
   #feed a:hover #content p:last-child{
     color: #E64B5F;
   }
