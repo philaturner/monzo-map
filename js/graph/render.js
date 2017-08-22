@@ -59,6 +59,7 @@ var graphCanvas = function( p ) {
           spendDiv.innerHTML = currency.getCurrencySymbol(user.currency) + nodes[i][2];
           spendDate = document.getElementById("spend-date");
           spendDate.innerHTML = nodes[i][3];
+          //setMapFilterDate('dynamic-circles', nodes[i][3]);
           //draw pink ellipse
           p.fill(80,185,220);
           p.noStroke();
@@ -67,6 +68,8 @@ var graphCanvas = function( p ) {
         }
         else {
           dailySpend.style('visibility', 'hidden');
+
+          //mapSpend.setFilter('dynamic-circles', null);
         }
       }
     }

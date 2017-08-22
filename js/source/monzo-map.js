@@ -71,6 +71,7 @@ function callbackHandler(reponse, type){
           'category': user.data.transactions[i].category,
           'currency': user.data.transactions[i].currency,
           'country': user.data.transactions[i].merchant.address.country,
+          'date': user.data.transactions[i].created,
           'spend': 0,
           'trans': 0,
         }
@@ -213,7 +214,7 @@ function setup(){
      // starting zoom
   });
   mapSpend.on('load', function () {
-      //addHeatmap();
+
       mapSpend.addSource('purchases', { type: 'geojson', data: null });  //load with null data until we populate
       mapSpend.addLayer({
           "id": "purchases",
@@ -248,13 +249,6 @@ function setup(){
       });
 
   });
-
-  // mapSpend.on('click', 'dynamic-circles', function (e) {
-  //   new mapboxgl.Popup()
-  //       .setLngLat(e.features[0].geometry.coordinates)
-  //       .setHTML(e.features[0].properties.description)
-  //       .addTo(mapSpend);
-  // });
 
   //TODO Fix console error spam
   var markerHeight = 50, markerRadius = 10, linearOffset = 25;
@@ -479,6 +473,10 @@ function createMapboxJSON(data, type){
     childObject.properties.c = buildPopupDesc(data[key].name, data[key].spend, data[key].google, data[key].trans, data[key].category, 'tooltip');
     childObject.properties.trans = data[key].trans;
     childObject.properties.category = data[key].category;
+
+    let makeDate = new Date(data[key].date);
+    let longDate = makeDate.toDateString();
+    childObject.properties.date = longDate;
 
     if (type == 'Point') childObject.geometry.coordinates = [data[key].long,data[key].lat];
 
@@ -840,6 +838,10 @@ function dayDifference(date1, date2){
 
 function setMapFilter(layer_name,filter_name){
   mapSpend.setFilter(layer_name, ['in', 'category', filter_name]);
+}
+
+function setMapFilterDate(layer_name,date){
+  mapSpend.setFilter(layer_name, ['in', 'date', date]);
 }
 
 function setFlyButton(display){
